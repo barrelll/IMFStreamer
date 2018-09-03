@@ -1,0 +1,9 @@
+[package]
+name = "h264_atoms"
+version = "0.1.0"
+authors = ["barrelll <jharrell_@outlook.com>"]
+
+[dependencies]
+minifb = "0.10.7"
+glob = "0.2.11"
+byteorder = "1.2.3"
