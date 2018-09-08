@@ -21,8 +21,10 @@ fn main() {
     use mpeg::*;
     use renderer::Renderer;
 
-    let path = Path::new("..").join("assets").join("MP4s").join("20180226_105206.mp4");
-    //let path = Path::new("..").join("assets").join("star_trails.mp4");
+    let path = Path::new("..")
+        .join("assets")
+        .join("MP4s")
+        .join("20180226_105206.mp4");
     let file_buffer = read_file_into_u8(&path).unwrap();
     let _mpeg = Mpeg::new(&file_buffer);
     Renderer::new("Test render mp4", 640, 360).run();

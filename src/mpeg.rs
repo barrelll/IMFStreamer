@@ -1,39 +1,18 @@
 use atom_tree::*;
 
 /*** Mpeg type definition ***/
-#[derive(Clone, Debug, Default)]
+#[derive(Debug, Default)]
 pub struct Mpeg<'a> {
-    atom_list: Option<Vec<&'a str>>,
+    atom_list: Option<Tree<'a, &'a [u8]>>,
 }
 
 impl<'a> Mpeg<'a> {
-    pub fn new(_d: &'a [u8]) -> Self {
-        let atom_list = None;
+    pub fn new(d: &'a [u8]) -> Self {
+        let atom_list = Some(build_tree(d));
         Mpeg {
             atom_list,
             ..Default::default()
         }
-    }
-
-
-    fn _build(d: &'a [u8]) -> Option<Vec<&'a str>> {
-        let mut data = d;
-        loop {
-            if data.len() == 0 {
-                break;
-            }
-            let size = match data.size() {
-                Ok(val) => val,
-                Err(e) => match e {
-                    AtomError::EOFError => data.len(),
-                    _ => {
-                        panic!("Mpeg, build_layers: cannot read size of atom!");
-                    }
-                },
-            };
-            data = &data[size..];
-        }
-        None
     }
 }
 /*** Mpeg type definition ***/

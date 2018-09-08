@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::convert::From;
 use std::io;
 use std::str;
