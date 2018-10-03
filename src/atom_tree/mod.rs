@@ -107,18 +107,24 @@ where
     ) -> Rc<Node<'a, &'a [u8]>> {
         let mut n = Node::<&[u8]>::new(data, name, parent);
         if contains_children(n.name.unwrap()) {
+            if unique(name.unwrap()) { return Rc::new(n); }
             let children = build(&data.unwrap()[8..]);
             n.children = children;
-            let n= Rc::new(n);
+            let n = Rc::new(n);
             for node in n.children.iter() {
                 *node.parent.borrow_mut() = Rc::downgrade(&n);
             }
+            println!("{:?}", n);
             n
         } else {
-            let n= Rc::new(n);
+            let n = Rc::new(n);
             n
         }
     }
+}
+
+fn unique(name: &str) -> bool {
+    name == "dref" || name == "stsd" || name == "udta"
 }
 
 fn contains_children(name: &str) -> bool {
@@ -161,7 +167,6 @@ fn build<'a>(data: &'a [u8]) -> Vec<Rc<Node<'a, &[u8]>>> {
         let node = Node::<&[u8]>::children(Some(&data[split..idx]), name, parent);
         root.push(node);
     }
-    println!("{:?}", root);
     root
 }
 
