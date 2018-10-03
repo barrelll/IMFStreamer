@@ -172,7 +172,7 @@ fn build<'a>(data: &'a [u8]) -> Vec<Rc<Node<'a, &[u8]>>> {
     root
 }
 
-pub fn build_tree(data: &[u8]) -> Option<u8> {
-    let _ = Tree::from_root(build(data));
-    None
+pub fn build_tree(data: &[u8]) -> Option<Tree<&[u8]>> {
+    let tree = Tree::from_root(build(data));
+    Some(tree)
 }
