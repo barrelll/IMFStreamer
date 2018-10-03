@@ -1,17 +1,138 @@
-mod atom_error;
+#![allow(dead_code)]
+#![allow(unused_imports)]
+#![allow(unused_variables)]
 mod atoms;
 
-use std::fmt;
-use std::str;
+use std::{cell::RefCell, fmt, rc::Rc, rc::Weak, str};
 
-//use self::atoms::*;
-pub use self::atom_error::AtomError;
+mod private {
+    pub trait IsSlice {
+        type Item;
+        fn as_slice(&self) -> &[Self::Item];
+    }
 
-pub fn build_tree(data: &[u8]) -> Tree<&[u8]> {
+    impl<'a, T> IsSlice for &'a [T] {
+        type Item = T;
+        fn as_slice(&self) -> &[Self::Item] {
+            self
+        }
+    }
+
+    impl<'a, T> IsSlice for Vec<T> {
+        type Item = T;
+        fn as_slice(&self) -> &[Self::Item] {
+            &self
+        }
+    }
+}
+
+#[derive(Debug, Default, Clone)]
+pub struct Tree<'a, T: 'a>
+where
+    T: Copy + Clone + private::IsSlice + Default,
+{
+    root: Vec<Rc<Node<'a, T>>>,
+}
+
+impl<'a, T: 'a> Tree<'a, T>
+where
+    T: Copy + Clone + private::IsSlice + Default,
+{
+    fn new() -> Tree<'a, T> {
+        Tree {
+            root: Vec::<Rc<Node<'a, T>>>::new(),
+        }
+    }
+
+    fn from_root(root: Vec<Rc<Node<'a, T>>>) -> Tree<'a, T> {
+        Tree { root }
+    }
+
+    fn push(&mut self, n: Rc<Node<'a, T>>) {
+        self.root.push(n);
+    }
+}
+
+#[derive(Default, Clone)]
+struct Node<'a, T>
+where
+    T: Copy + Clone + private::IsSlice + Default,
+{
+    data: Option<T>,
+    name: Option<&'a str>,
+    parent: RefCell<Weak<Node<'a, T>>>,
+    children: Vec<Rc<Node<'a, T>>>,
+}
+
+impl<'a, T: 'a> fmt::Debug for Node<'a, T>
+where
+    T: Copy + Clone + private::IsSlice + Default,
+{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "Node {{ name: {:?}, parent: {:?}, children {:?} }}",
+            self.name, self.parent, self.children
+        )
+    }
+}
+
+impl<'a, T: 'a> Node<'a, T>
+where
+    T: Copy + Clone + private::IsSlice + Default,
+{
+    fn new(
+        data: Option<T>,
+        name: Option<&'a str>,
+        parent: RefCell<Weak<Node<'a, T>>>,
+    ) -> Node<'a, T> {
+        Node {
+            data,
+            name,
+            parent,
+            ..Default::default()
+        }
+    }
+
+    fn default() -> Node<'a, T> {
+        Node {
+            ..Default::default()
+        }
+    }
+
+    fn children(
+        data: Option<&'a [u8]>,
+        name: Option<&'a str>,
+        parent: RefCell<Weak<Node<'a, &'a [u8]>>>,
+    ) -> Rc<Node<'a, &'a [u8]>> {
+        let mut n = Node::<&[u8]>::new(data, name, parent);
+        if contains_children(n.name.unwrap()) {
+            let children = build(&data.unwrap()[8..]);
+            n.children = children;
+            let n= Rc::new(n);
+            for node in n.children.iter() {
+                *node.parent.borrow_mut() = Rc::downgrade(&n);
+            }
+            n
+        } else {
+            let n= Rc::new(n);
+            n
+        }
+    }
+}
+
+fn contains_children(name: &str) -> bool {
+    atoms::ATOM_TYPES_WCHILDREN.binary_search(&name).is_ok() || atoms::FULL_ATOM_TYPES_WCHILDREN
+        .binary_search(&name)
+        .is_ok()
+}
+
+fn build<'a>(data: &'a [u8]) -> Vec<Rc<Node<'a, &[u8]>>> {
     let err_str = "Unreadable!";
     let eof = data.len();
-    let mut tree = Tree::<&[u8]>::new();
+    let mut root = Vec::<Rc<Node<&[u8]>>>::new();
     let mut idx = 0;
+
     let find_idx = |split: usize| -> usize {
         use byteorder::{BigEndian, ReadBytesExt};
         use std::io::Cursor;
@@ -36,82 +157,15 @@ pub fn build_tree(data: &[u8]) -> Tree<&[u8]> {
         // split
         idx = find_idx(split);
         let name = str::from_utf8(&data[split + 4..split + 8]).ok();
-        if contains_children(name.expect(err_str)) {
-            // let fn = get_child_function(name.expect(err_str));
-            // fn (&data[split..idx])?
-            tree.new_node(name, None, None, None, None, None, &data[split..idx]);
-        } else {
-            tree.new_node(name, None, None, None, None, None, &data[split..idx]);
-        }
+        let parent = RefCell::new(Weak::new());
+        let node = Node::<&[u8]>::children(Some(&data[split..idx]), name, parent);
+        root.push(node);
     }
-    tree
+    println!("{:?}", root);
+    root
 }
 
-fn contains_children(name: &str) -> bool {
-    atoms::ATOM_TYPES_WCHILDREN.binary_search(&name).is_ok()
-        || atoms::FULL_ATOM_TYPES_WCHILDREN
-            .binary_search(&name)
-            .is_ok()
-}
-
-type Root<'a, T> = Vec<Node<'a, T>>;
-
-#[derive(Debug, Default)]
-pub struct Tree<'a, T: 'a> {
-    root: Root<'a, T>,
-}
-
-impl<'a, T> Tree<'a, T> {
-    fn new_node(
-        &mut self,
-        name: Option<&'a str>,
-        parent: Option<&'a Node<'a, T>>,
-        parent_name: Option<&'a str>,
-        parent_list: Option<&'a Vec<Node<'a, T>>>,
-        children: Option<Vec<Node<'a, T>>>,
-        next: Option<&'a Node<'a, T>>,
-        data: T,
-    ) -> usize {
-        let next_index = self.root.len();
-
-        self.root.push(Node {
-            name,
-            parent,
-            parent_name,
-            parent_list,
-            children,
-            next,
-            data,
-        });
-
-        next_index
-    }
-
-    fn new() -> Tree<'a, T> {
-        let root = Root::<'a, T>::new();
-        Tree { root }
-    }
-}
-
-#[derive(Default)]
-struct Node<'a, T: 'a> {
-    name: Option<&'a str>,
-    parent: Option<&'a Node<'a, T>>,
-    parent_name: Option<&'a str>,
-    parent_list: Option<&'a Root<'a, T>>,
-    children: Option<Root<'a, T>>,
-    next: Option<&'a Node<'a, T>>,
-
-    /// The actual data which will be stored within the tree
-    pub data: T,
-}
-
-impl<'a, T> fmt::Debug for Node<'a, T> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "Node: [ name {:?}, parent_name {:?}, children {:?} ]",
-            self.name, self.parent_name, self.children
-        )
-    }
+pub fn build_tree(data: &[u8]) -> Option<u8> {
+    let _ = Tree::from_root(build(data));
+    None
 }

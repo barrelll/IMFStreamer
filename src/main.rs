@@ -1,6 +1,7 @@
 extern crate byteorder;
 extern crate glob;
 extern crate minifb;
+
 mod atom_tree;
 mod mpeg;
 mod renderer;

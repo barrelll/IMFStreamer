@@ -2,13 +2,13 @@ use atom_tree::*;
 
 /*** Mpeg type definition ***/
 #[derive(Debug, Default)]
-pub struct Mpeg<'a> {
-    atom_list: Option<Tree<'a, &'a [u8]>>,
+pub struct Mpeg {
+    atom_list: Option<u8>,
 }
 
-impl<'a> Mpeg<'a> {
+impl<'a> Mpeg {
     pub fn new(d: &'a [u8]) -> Self {
-        let atom_list = Some(build_tree(d));
+        let atom_list = build_tree(d);
         Mpeg {
             atom_list,
             ..Default::default()
