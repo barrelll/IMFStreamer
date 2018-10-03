@@ -116,7 +116,6 @@ where
             for node in n.children.iter() {
                 *node.parent.borrow_mut() = Rc::downgrade(&n);
             }
-            println!("{:?}", n);
             n
         } else {
             let n = Rc::new(n);
