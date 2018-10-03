@@ -107,7 +107,9 @@ where
     ) -> Rc<Node<'a, &'a [u8]>> {
         let mut n = Node::<&[u8]>::new(data, name, parent);
         if contains_children(n.name.unwrap()) {
-            if unique(name.unwrap()) { return Rc::new(n); }
+            if unique(name.unwrap()) {
+                return Rc::new(n);
+            }
             let children = build(&data.unwrap()[8..]);
             n.children = children;
             let n = Rc::new(n);
