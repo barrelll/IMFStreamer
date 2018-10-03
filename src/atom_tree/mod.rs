@@ -1,6 +1,4 @@
 #![allow(dead_code)]
-#![allow(unused_imports)]
-#![allow(unused_variables)]
 mod atoms;
 
 use std::{cell::RefCell, fmt, rc::Rc, rc::Weak, str};
@@ -104,13 +102,14 @@ where
         data: Option<&'a [u8]>,
         name: Option<&'a str>,
         parent: RefCell<Weak<Node<'a, &'a [u8]>>>,
+        start: usize,
     ) -> Rc<Node<'a, &'a [u8]>> {
         let mut n = Node::<&[u8]>::new(data, name, parent);
         if contains_children(n.name.unwrap()) {
             if unique(name.unwrap()) {
                 return Rc::new(n);
             }
-            let children = build(&data.unwrap()[8..]);
+            let children = build(&data.unwrap()[start..]);
             n.children = children;
             let n = Rc::new(n);
             for node in n.children.iter() {
@@ -140,20 +139,24 @@ fn build<'a>(data: &'a [u8]) -> Vec<Rc<Node<'a, &[u8]>>> {
     let mut root = Vec::<Rc<Node<&[u8]>>>::new();
     let mut idx = 0;
 
-    let find_idx = |split: usize| -> usize {
+    let find_idx = |split: usize| -> (usize, usize) {
         use byteorder::{BigEndian, ReadBytesExt};
         use std::io::Cursor;
 
         let d = &data[split..];
         let size_flag = Cursor::new(&d[..4]).read_u32::<BigEndian>().expect(err_str);
+        let mut start_pos: usize = 8;
         let actual_size = match size_flag {
             0 => eof,
-            1 => Cursor::new(&d[8..16])
-                .read_u64::<BigEndian>()
-                .expect(err_str) as usize,
+            1 => {
+                start_pos = 16;
+                Cursor::new(&d[8..16])
+                    .read_u64::<BigEndian>()
+                    .expect(err_str) as usize
+            },
             val => val as usize,
         };
-        actual_size + split
+        (actual_size + split, start_pos)
     };
 
     loop {
@@ -162,10 +165,11 @@ fn build<'a>(data: &'a [u8]) -> Vec<Rc<Node<'a, &[u8]>>> {
         }
         let split = idx;
         // split
-        idx = find_idx(split);
+        let (x, y) = find_idx(split);
+        idx = x;
         let name = str::from_utf8(&data[split + 4..split + 8]).ok();
         let parent = RefCell::new(Weak::new());
-        let node = Node::<&[u8]>::children(Some(&data[split..idx]), name, parent);
+        let node = Node::<&[u8]>::children(Some(&data[split..idx]), name, parent, y);
         root.push(node);
     }
     root
