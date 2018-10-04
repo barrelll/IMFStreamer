@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use minifb::{Key, Scale, Window, WindowOptions};
 
 pub struct Renderer {

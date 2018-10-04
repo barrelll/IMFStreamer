@@ -3,7 +3,12 @@ use atom_tree::*;
 /*** Mpeg type definition ***/
 #[derive(Debug, Default)]
 pub struct Mpeg<'a> {
+    cached: Option<u32>,
     atom_list: Option<Tree<'a, &'a [u8]>>,
+}
+
+impl<'a> Mpeg<'a> {
+
 }
 
 impl<'a> Mpeg<'a> {

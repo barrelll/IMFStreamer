@@ -20,13 +20,13 @@ fn read_file_into_u8(f_path: &Path) -> Result<Vec<u8>> {
 
 fn main() {
     use mpeg::*;
-    use renderer::Renderer;
+    //use renderer::Renderer;
 
     let path = Path::new("..")
         .join("assets")
         .join("MP4s")
-        .join("MOV_0045.mp4");
+        .join("MOV_0044.mp4");
     let file_buffer = read_file_into_u8(&path).unwrap();
     let _mpeg = Mpeg::new(&file_buffer);
-    Renderer::new("Test render mp4", 640, 360).run();
+    /*Renderer::new("Test render mp4", 640, 360).run();*/
 }
