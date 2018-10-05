@@ -1,4 +1,4 @@
-use atom_tree::{BuildNode, Name, SearchFor, Tree};
+use atom_tree::{BuildNode, Name, SearchFor, Tree, IsSlice};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Tkhd;
@@ -10,7 +10,7 @@ impl<'a> Name<'a> for Tkhd {
 }
 
 impl BuildNode for Tkhd {
-    fn build(_data: &[u8]) -> Option<Self> {
+    fn build<T: IsSlice<Item=u8>>(_data: T) -> Option<Self> {
         Some(Tkhd)
     }
 }

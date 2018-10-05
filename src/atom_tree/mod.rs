@@ -12,45 +12,43 @@ pub trait SearchFor {
 }
 
 pub trait BuildNode {
-    fn build(data: &[u8]) -> Option<Self>
+    fn build<T: IsSlice<Item=u8>>(data: T) -> Option<Self>
     where
         Self: Sized;
 }
 
 use std::{cell::RefCell, fmt, rc::Rc, rc::Weak, str};
 
-mod private {
-    pub trait IsSlice {
-        type Item;
-        fn as_slice(&self) -> &[Self::Item];
-    }
+pub trait IsSlice {
+    type Item;
+    fn as_slice(&self) -> &[Self::Item];
+}
 
-    impl<'a, T> IsSlice for &'a [T] {
-        type Item = T;
-        fn as_slice(&self) -> &[Self::Item] {
-            self
-        }
+impl<'a> IsSlice for &'a [u8] {
+    type Item = u8;
+    fn as_slice(&self) -> &[Self::Item] {
+        self
     }
+}
 
-    impl<'a, T> IsSlice for Vec<T> {
-        type Item = T;
-        fn as_slice(&self) -> &[Self::Item] {
-            &self
-        }
+impl<'a> IsSlice for Vec<u8> {
+    type Item = u8;
+    fn as_slice(&self) -> &[Self::Item] {
+        &self
     }
 }
 
 #[derive(Debug, Default, Clone)]
 pub struct Tree<'a, T: 'a>
 where
-    T: Copy + Clone + private::IsSlice + Default,
+    T: Copy + Clone + IsSlice + Default,
 {
     root: Vec<Rc<Node<'a, T>>>,
 }
 
 impl<'a, T: 'a> Tree<'a, T>
 where
-    T: Copy + Clone + private::IsSlice + Default,
+    T: Copy + Clone + IsSlice<Item=u8> + Default,
 {
     fn new() -> Tree<'a, T> {
         Tree {
@@ -77,8 +75,7 @@ where
                             let mut ret = String::new();
                             let len = paths.len();
                             if len == 1 {
-                                //return Some(N::build(node.data.unwrap()))
-                                return None;
+                                return N::build(node.data.unwrap())
                             }
                             let slice = &paths[1..len - 1];
                             for &p in slice {
@@ -99,7 +96,7 @@ where
 #[derive(Default, Clone)]
 struct Node<'a, T>
 where
-    T: Copy + Clone + private::IsSlice + Default,
+    T: Copy + Clone + IsSlice + Default,
 {
     data: Option<T>,
     name: Option<&'a str>,
@@ -109,7 +106,7 @@ where
 
 impl<'a, T: 'a> fmt::Debug for Node<'a, T>
 where
-    T: Copy + Clone + private::IsSlice + Default,
+    T: Copy + Clone + IsSlice + Default,
 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
@@ -122,7 +119,7 @@ where
 
 impl<'a, T: 'a> Node<'a, T>
 where
-    T: Copy + Clone + private::IsSlice + Default,
+    T: Copy + Clone + IsSlice<Item=u8> + Default,
 {
     fn new(
         data: Option<T>,
@@ -178,8 +175,7 @@ where
                             let mut ret = String::new();
                             let len = paths.len();
                             if len == 1 {
-                                //return Some(N::build(node.data.unwrap()))
-                                return None;
+                                return N::build(node.data.unwrap())
                             }
                             let slice = &paths[1..len - 1];
                             for &p in slice {
