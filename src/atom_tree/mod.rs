@@ -1,5 +1,21 @@
 #![allow(dead_code)]
-mod atoms;
+pub mod atoms;
+
+pub trait Name<'a> {
+    fn name() -> &'a str;
+}
+
+pub trait SearchFor {
+    fn search(tree: &Tree<&[u8]>) -> Option<Self>
+    where
+        Self: Sized;
+}
+
+pub trait BuildNode {
+    fn build(data: &[u8]) -> Option<Self>
+    where
+        Self: Sized;
+}
 
 use std::{cell::RefCell, fmt, rc::Rc, rc::Weak, str};
 
@@ -153,7 +169,7 @@ fn build<'a>(data: &'a [u8]) -> Vec<Rc<Node<'a, &[u8]>>> {
                 Cursor::new(&d[8..16])
                     .read_u64::<BigEndian>()
                     .expect(err_str) as usize
-            },
+            }
             val => val as usize,
         };
         (actual_size + split, start_pos)

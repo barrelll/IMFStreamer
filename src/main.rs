@@ -27,6 +27,8 @@ fn main() {
         .join("MP4s")
         .join("MOV_0044.mp4");
     let file_buffer = read_file_into_u8(&path).unwrap();
-    let _mpeg = Mpeg::new(&file_buffer);
+    let mpeg = Mpeg::new(&file_buffer);
+    mpeg._major_brand();
+    mpeg._minor_brands();
     /*Renderer::new("Test render mp4", 640, 360).run();*/
 }

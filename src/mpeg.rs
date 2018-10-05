@@ -8,7 +8,15 @@ pub struct Mpeg<'a> {
 }
 
 impl<'a> Mpeg<'a> {
+    pub fn _major_brand(&self) -> Option<String> {
+        let tree = &self.atom_list;
+        let _f = atoms::Ftyp::search(&tree.to_owned().unwrap());
+        None
+    }
 
+    pub fn _minor_brands(&self) -> Option<Vec<String>> {
+        None
+    }
 }
 
 impl<'a> Mpeg<'a> {
