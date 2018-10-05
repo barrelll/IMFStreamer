@@ -65,6 +65,35 @@ where
     fn push(&mut self, n: Rc<Node<'a, T>>) {
         self.root.push(n);
     }
+
+    pub fn search_path<'p, N: SearchFor + BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
+        let paths: Vec<&str> = path.split('.').collect();
+        let iter = self.root.iter();
+        for node in iter {
+            match node.name {
+                Some(val) => {
+                    if val == paths[0] {
+                        let path = {
+                            let mut ret = String::new();
+                            let len = paths.len();
+                            if len == 1 {
+                                //return Some(N::build(node.data.unwrap()))
+                                return None;
+                            }
+                            let slice = &paths[1..len - 1];
+                            for &p in slice {
+                                ret += &(p.to_string() + ".");
+                            }
+                            ret + paths[len - 1]
+                        };
+                        return node.search_path::<N>(path.as_str());
+                    }
+                }
+                None => return None,
+            }
+        }
+        None
+    }
 }
 
 #[derive(Default, Clone)]
@@ -136,6 +165,35 @@ where
             let n = Rc::new(n);
             n
         }
+    }
+
+    pub fn search_path<'p, N: SearchFor + BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
+        let paths: Vec<&str> = path.split('.').collect();
+        let iter = self.children.iter();
+        for node in iter {
+            match node.name {
+                Some(val) => {
+                    if val == paths[0] {
+                        let path = {
+                            let mut ret = String::new();
+                            let len = paths.len();
+                            if len == 1 {
+                                //return Some(N::build(node.data.unwrap()))
+                                return None;
+                            }
+                            let slice = &paths[1..len - 1];
+                            for &p in slice {
+                                ret += &(p.to_string() + ".");
+                            }
+                            ret + paths[len - 1]
+                        };
+                        return node.search_path::<N>(path.as_str());
+                    }
+                }
+                None => return None,
+            }
+        }
+        None
     }
 }
 
