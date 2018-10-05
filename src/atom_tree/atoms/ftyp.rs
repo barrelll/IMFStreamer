@@ -1,4 +1,4 @@
-use atom_tree::{BuildNode, Name, SearchFor, Tree, IsSlice};
+use atom_tree::{BuildNode, IsSlice, Name, SearchFor, Tree};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Ftyp;
@@ -10,7 +10,7 @@ impl<'a> Name<'a> for Ftyp {
 }
 
 impl BuildNode for Ftyp {
-    fn build<T: IsSlice<Item=u8>>(_data: T) -> Option<Self> {
+    fn build<T: IsSlice<Item = u8>>(_data: T) -> Option<Self> {
         Some(Ftyp)
     }
 }

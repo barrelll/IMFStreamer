@@ -12,7 +12,7 @@ pub trait SearchFor {
 }
 
 pub trait BuildNode {
-    fn build<T: IsSlice<Item=u8>>(data: T) -> Option<Self>
+    fn build<T: IsSlice<Item = u8>>(data: T) -> Option<Self>
     where
         Self: Sized;
 }
@@ -41,14 +41,14 @@ impl<'a> IsSlice for Vec<u8> {
 #[derive(Debug, Default, Clone)]
 pub struct Tree<'a, T: 'a>
 where
-    T: Copy + Clone + IsSlice<Item=u8> + Default,
+    T: Copy + Clone + IsSlice<Item = u8> + Default,
 {
     root: Vec<Rc<Node<'a, T>>>,
 }
 
 impl<'a, T: 'a> Tree<'a, T>
 where
-    T: Copy + Clone + IsSlice<Item=u8> + Default,
+    T: Copy + Clone + IsSlice<Item = u8> + Default,
 {
     fn new() -> Tree<'a, T> {
         Tree {
@@ -75,7 +75,7 @@ where
                             let mut ret = String::new();
                             let len = paths.len();
                             if len == 1 {
-                                return N::build(node.data.unwrap())
+                                return N::build(node.data.unwrap());
                             }
                             let slice = &paths[1..len - 1];
                             for &p in slice {
@@ -96,7 +96,7 @@ where
 #[derive(Default, Clone)]
 struct Node<'a, T>
 where
-    T: Copy + Clone + IsSlice<Item=u8> + Default,
+    T: Copy + Clone + IsSlice<Item = u8> + Default,
 {
     data: Option<T>,
     name: Option<&'a str>,
@@ -106,7 +106,7 @@ where
 
 impl<'a, T: 'a> fmt::Debug for Node<'a, T>
 where
-    T: Copy + Clone + IsSlice<Item=u8> + Default,
+    T: Copy + Clone + IsSlice<Item = u8> + Default,
 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
@@ -119,7 +119,7 @@ where
 
 impl<'a, T: 'a> Node<'a, T>
 where
-    T: Copy + Clone + IsSlice<Item=u8> + Default,
+    T: Copy + Clone + IsSlice<Item = u8> + Default,
 {
     fn new(
         data: Option<T>,
@@ -175,7 +175,7 @@ where
                             let mut ret = String::new();
                             let len = paths.len();
                             if len == 1 {
-                                return N::build(node.data.unwrap())
+                                return N::build(node.data.unwrap());
                             }
                             let slice = &paths[1..len - 1];
                             for &p in slice {

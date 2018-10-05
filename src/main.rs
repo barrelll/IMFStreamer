@@ -25,7 +25,7 @@ fn main() {
     let path = Path::new("..")
         .join("assets")
         .join("MP4s")
-        .join("MOV_0044.mp4");
+        .join("MOV_0045.mp4");
     let file_buffer = read_file_into_u8(&path).unwrap();
     let mpeg = Mpeg::new(&file_buffer);
     mpeg.major_brand();
