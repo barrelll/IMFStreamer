@@ -1,6 +1,6 @@
 use atom_tree::{BuildNode, IsSlice, Name, SearchFor, Tree};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct Tkhd;
 
 impl<'a> Name<'a> for Tkhd {
@@ -10,10 +10,8 @@ impl<'a> Name<'a> for Tkhd {
 }
 
 impl BuildNode for Tkhd {
-    fn build<T: IsSlice<Item = u8>>(_data: T) -> Option<Self> {
-        use std::str::from_utf8;
-        let d = _data.as_slice();
-        println!("{:?}", from_utf8(&d[4..8]));
+    fn build<T: IsSlice<Item = u8>>(data: T) -> Option<Self> {
+        let _d = data.as_slice();
         Some(Tkhd)
     }
 }

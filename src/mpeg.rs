@@ -10,26 +10,45 @@ pub struct Mpeg<'a> {
 impl<'a> Mpeg<'a> {
     pub fn major_brand(&self) -> Option<String> {
         let tree = &self.atom_list;
-        let _f = atoms::Ftyp::search(
+        match atoms::Ftyp::search(
             tree.as_ref()
                 .expect("Mpeg::major_brand (Tree doesn't exist yet)"),
-        );
-        None
+        ) {
+            Some(val) => val.major_brand,
+            None => None,
+        }
+    }
+
+    pub fn minor_version(&self) -> Option<u32> {
+        let tree = &self.atom_list;
+        match atoms::Ftyp::search(
+            tree.as_ref()
+                .expect("Mpeg::major_brand (Tree doesn't exist yet)"),
+        ) {
+            Some(val) => val.minor_version,
+            None => None,
+        }
     }
 
     pub fn minor_brands(&self) -> Option<Vec<String>> {
-        None
+        let tree = &self.atom_list;
+        match atoms::Ftyp::search(
+            tree.as_ref()
+                .expect("Mpeg::major_brand (Tree doesn't exist yet)"),
+        ) {
+            Some(val) => val.minor_brands,
+            None => None,
+        }
     }
 }
 
 impl<'a> Mpeg<'a> {
     pub fn new(d: &'a [u8]) -> Self {
         let atom_list = build_tree(d);
-        let atom = atom_list
+        atom_list
             .to_owned()
             .unwrap()
             .search_path::<atoms::Tkhd>("moov.trak.tkhd");
-        println!("{:?}", atom_list);
         Mpeg {
             atom_list,
             ..Default::default()

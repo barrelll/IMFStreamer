@@ -25,10 +25,11 @@ fn main() {
     let path = Path::new("..")
         .join("assets")
         .join("MP4s")
-        .join("MOV_0045.mp4");
+        .join("big_buck_bunny.mp4");
     let file_buffer = read_file_into_u8(&path).unwrap();
     let mpeg = Mpeg::new(&file_buffer);
-    mpeg.major_brand();
-    mpeg.minor_brands();
+    println!("{:?}", mpeg.major_brand());
+    println!("{:?}", mpeg.minor_version());
+    println!("{:?}", mpeg.minor_brands());
     /*Renderer::new("Test render mp4", 640, 360).run();*/
 }
