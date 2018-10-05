@@ -41,7 +41,7 @@ impl<'a> IsSlice for Vec<u8> {
 #[derive(Debug, Default, Clone)]
 pub struct Tree<'a, T: 'a>
 where
-    T: Copy + Clone + IsSlice + Default,
+    T: Copy + Clone + IsSlice<Item=u8> + Default,
 {
     root: Vec<Rc<Node<'a, T>>>,
 }
@@ -96,7 +96,7 @@ where
 #[derive(Default, Clone)]
 struct Node<'a, T>
 where
-    T: Copy + Clone + IsSlice + Default,
+    T: Copy + Clone + IsSlice<Item=u8> + Default,
 {
     data: Option<T>,
     name: Option<&'a str>,
@@ -106,7 +106,7 @@ where
 
 impl<'a, T: 'a> fmt::Debug for Node<'a, T>
 where
-    T: Copy + Clone + IsSlice + Default,
+    T: Copy + Clone + IsSlice<Item=u8> + Default,
 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(

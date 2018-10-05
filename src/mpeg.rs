@@ -25,10 +25,11 @@ impl<'a> Mpeg<'a> {
 impl<'a> Mpeg<'a> {
     pub fn new(d: &'a [u8]) -> Self {
         let atom_list = build_tree(d);
-        atom_list
+        let atom = atom_list
             .to_owned()
             .unwrap()
             .search_path::<atoms::Tkhd>("moov.trak.tkhd");
+        println!("{:?}", atom_list);
         Mpeg {
             atom_list,
             ..Default::default()

@@ -11,8 +11,6 @@ impl<'a> Name<'a> for Ftyp {
 
 impl BuildNode for Ftyp {
     fn build<T: IsSlice<Item=u8>>(_data: T) -> Option<Self> {
-        let d = _data.as_slice();
-        println!("{:?}", &d[0..4]);
         Some(Ftyp)
     }
 }
