@@ -1,4 +1,4 @@
-use atom_tree::{BuildNode, IsSlice, Name};
+use atoms::{BuildNode, IsSlice, Name};
 
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Moov {

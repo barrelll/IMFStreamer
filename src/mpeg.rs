@@ -1,4 +1,4 @@
-use atom_tree::*;
+use atoms::*;
 
 /*** Mpeg type definition ***/
 #[derive(Debug, Default)]
@@ -11,7 +11,7 @@ impl<'a> Mpeg<'a> {
     pub fn major_brand(&self) -> Option<String> {
         let tree = &self.atom_list;
         match tree {
-            Some(t) => match t.solid_type_search_path::<atoms::Ftyp>("ftyp", None) {
+            Some(t) => match t.solid_type_search_path::<iso_p12::Ftyp>("ftyp", None) {
                 Some(val) => val.major_brand,
                 None => None,
             },
@@ -22,7 +22,7 @@ impl<'a> Mpeg<'a> {
     pub fn minor_version(&self) -> Option<u32> {
         let tree = &self.atom_list;
         match tree {
-            Some(t) => match t.solid_type_search_path::<atoms::Ftyp>("ftyp", None) {
+            Some(t) => match t.solid_type_search_path::<iso_p12::Ftyp>("ftyp", None) {
                 Some(val) => val.minor_version,
                 None => None,
             },
@@ -33,7 +33,7 @@ impl<'a> Mpeg<'a> {
     pub fn minor_brands(&self) -> Option<Vec<String>> {
         let tree = &self.atom_list;
         match tree {
-            Some(t) => match t.solid_type_search_path::<atoms::Ftyp>("ftyp", None) {
+            Some(t) => match t.solid_type_search_path::<iso_p12::Ftyp>("ftyp", None) {
                 Some(val) => val.minor_brands,
                 None => None,
             },
@@ -41,15 +41,19 @@ impl<'a> Mpeg<'a> {
         }
     }
 
-    pub fn t_grab_traks(&self) -> Option<Vec<Option<atoms::Trak>>> {
+    pub fn t_grab_traks(&self) -> Option<Vec<Option<iso_p12::Trak>>> {
         let tree = &self.atom_list;
         match tree {
             Some(t) => {
                 let parent = t.node_search_path("moov", None).expect("can't find moov");
-                let traks = parent.solid_type_children_of_type::<atoms::Trak>();
+                let traks = parent.solid_type_children_of_type::<iso_p12::Trak>();
+                let trak_nodes = parent.node_children_of_type::<iso_p12::Trak>();
+                for node in trak_nodes {
+                    let _ = node.solid_type_search_path::<iso_p12::Stsd>("mdia.minf.stbl.stsd", None);
+                }
                 Some(traks)
-            },
-            None => { None },
+            }
+            None => None,
         }
     }
 }

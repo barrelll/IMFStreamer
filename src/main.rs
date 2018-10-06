@@ -2,7 +2,7 @@ extern crate byteorder;
 extern crate glob;
 extern crate minifb;
 
-mod atom_tree;
+mod atoms;
 mod mpeg;
 mod renderer;
 
@@ -25,7 +25,7 @@ fn main() {
     let path = Path::new("..")
         .join("assets")
         .join("MP4s")
-        .join("star_trails.mp4");
+        .join("big_buck_bunny.mp4");
     let file_buffer = read_file_into_u8(&path).unwrap();
     let mpeg = Mpeg::new(&file_buffer);
     println!("{:?}", mpeg);

@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-pub mod atoms;
+pub mod iso_p12;
 
 pub trait Name<'a> {
     fn name() -> &'a str;
@@ -289,7 +289,7 @@ fn unique(name: &str) -> bool {
 }
 
 fn contains_children(name: &str) -> bool {
-    atoms::ATOM_TYPES_WCHILDREN.binary_search(&name).is_ok() || atoms::FULL_ATOM_TYPES_WCHILDREN
+    iso_p12::ATOM_TYPES_WCHILDREN.binary_search(&name).is_ok() || iso_p12::FULL_ATOM_TYPES_WCHILDREN
         .binary_search(&name)
         .is_ok()
 }
