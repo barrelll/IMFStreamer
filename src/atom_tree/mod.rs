@@ -58,7 +58,7 @@ where
         self.root.push(n);
     }
 
-    pub fn search_path<'p, N: BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
+    pub fn solid_type_search_path<'p, N: BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
         let paths: Vec<&str> = path.split('.').collect();
         let iter = self.root.iter();
         for node in iter {
@@ -77,7 +77,35 @@ where
                             }
                             ret + paths[len - 1]
                         };
-                        return node.search_path::<N>(path.as_str());
+                        return node.solid_type_search_path::<N>(path.as_str());
+                    }
+                }
+                None => return None,
+            }
+        }
+        None
+    }
+
+    pub fn node_search_path(&self, path: &str) -> Option<Rc<Node<'a, T>>> {
+        let paths: Vec<&str> = path.split('.').collect();
+        let iter = self.root.iter();
+        for node in iter {
+            match node.name {
+                Some(val) => {
+                    if val == paths[0] {
+                        let path = {
+                            let mut ret = String::new();
+                            let len = paths.len();
+                            if len == 1 {
+                                return Some(Rc::clone(node));
+                            }
+                            let slice = &paths[1..len - 1];
+                            for &p in slice {
+                                ret += &(p.to_string() + ".");
+                            }
+                            ret + paths[len - 1]
+                        };
+                        return node.node_search_path(path.as_str());
                     }
                 }
                 None => return None,
@@ -88,7 +116,7 @@ where
 }
 
 #[derive(Default, Clone)]
-struct Node<'a, T>
+pub struct Node<'a, T>
 where
     T: Copy + Clone + IsSlice<Item = u8> + Default,
 {
@@ -158,7 +186,7 @@ where
         }
     }
 
-    pub fn search_path<'p, N: BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
+    pub fn solid_type_search_path<'p, N: BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
         let paths: Vec<&str> = path.split('.').collect();
         let iter = self.children.iter();
         for node in iter {
@@ -177,7 +205,35 @@ where
                             }
                             ret + paths[len - 1]
                         };
-                        return node.search_path::<N>(path.as_str());
+                        return node.solid_type_search_path::<N>(path.as_str());
+                    }
+                }
+                None => return None,
+            }
+        }
+        None
+    }
+
+    pub fn node_search_path(&self, path: &str) -> Option<Rc<Node<'a, T>>> {
+        let paths: Vec<&str> = path.split('.').collect();
+        let iter = self.children.iter();
+        for node in iter {
+            match node.name {
+                Some(val) => {
+                    if val == paths[0] {
+                        let path = {
+                            let mut ret = String::new();
+                            let len = paths.len();
+                            if len == 1 {
+                                return Some(Rc::clone(node));
+                            }
+                            let slice = &paths[1..len - 1];
+                            for &p in slice {
+                                ret += &(p.to_string() + ".");
+                            }
+                            ret + paths[len - 1]
+                        };
+                        return node.node_search_path(path.as_str());
                     }
                 }
                 None => return None,
