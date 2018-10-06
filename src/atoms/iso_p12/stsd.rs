@@ -1,4 +1,4 @@
-use atoms::{BuildNode, IsSlice, Name, build};
+use atoms::{build, BuildNode, IsSlice, Name};
 
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Stsd;

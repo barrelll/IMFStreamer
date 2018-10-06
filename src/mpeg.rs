@@ -49,7 +49,8 @@ impl<'a> Mpeg<'a> {
                 let traks = parent.solid_type_children_of_type::<iso_p12::Trak>();
                 let trak_nodes = parent.node_children_of_type::<iso_p12::Trak>();
                 for node in trak_nodes {
-                    let _ = node.solid_type_search_path::<iso_p12::Stsd>("mdia.minf.stbl.stsd", None);
+                    let _ =
+                        node.solid_type_search_path::<iso_p12::Stsd>("mdia.minf.stbl.stsd", None);
                 }
                 Some(traks)
             }

@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 pub mod iso_p12;
+pub mod sample_entry;
 
 pub trait Name<'a> {
     fn name() -> &'a str;
