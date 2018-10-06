@@ -190,7 +190,7 @@ where
         }
     }
 
-    fn solid_type_children_of_type<'p, N: BuildNode + Name<'p>>(&self) -> Vec<Option<N>> {
+    pub fn solid_type_children_of_type<'p, N: BuildNode + Name<'p>>(&self) -> Vec<Option<N>> {
         let v: Vec<Option<N>> = self
             .children
             .iter()
@@ -207,7 +207,7 @@ where
         v
     }
 
-    fn node_children_of_type<'p, N: Name<'p>>(&self) -> Vec<&Rc<Node<'a, T>>> {
+    pub fn node_children_of_type<'p, N: Name<'p>>(&self) -> Vec<&Rc<Node<'a, T>>> {
         let v: Vec<&Rc<Node<T>>> = self
             .children
             .iter()
@@ -219,7 +219,7 @@ where
         v
     }
 
-    fn num_children(&self) -> usize {
+    pub fn num_children(&self) -> usize {
         self.children.len()
     }
 
