@@ -5,12 +5,6 @@ pub trait Name<'a> {
     fn name() -> &'a str;
 }
 
-pub trait SearchFor {
-    fn search(tree: &Tree<&[u8]>) -> Option<Self>
-    where
-        Self: Sized;
-}
-
 pub trait BuildNode {
     fn build<T: IsSlice<Item = u8>>(data: T) -> Option<Self>
     where
@@ -64,7 +58,7 @@ where
         self.root.push(n);
     }
 
-    pub fn search_path<'p, N: SearchFor + BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
+    pub fn search_path<'p, N: BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
         let paths: Vec<&str> = path.split('.').collect();
         let iter = self.root.iter();
         for node in iter {
@@ -164,7 +158,7 @@ where
         }
     }
 
-    pub fn search_path<'p, N: SearchFor + BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
+    pub fn search_path<'p, N: BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
         let paths: Vec<&str> = path.split('.').collect();
         let iter = self.children.iter();
         for node in iter {
