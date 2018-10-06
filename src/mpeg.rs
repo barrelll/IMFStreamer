@@ -11,7 +11,7 @@ impl<'a> Mpeg<'a> {
     pub fn major_brand(&self) -> Option<String> {
         let tree = &self.atom_list;
         match tree {
-            Some(t) => match t.solid_type_search_path::<atoms::Ftyp>("ftyp") {
+            Some(t) => match t.solid_type_search_path::<atoms::Ftyp>("ftyp", None) {
                 Some(val) => val.major_brand,
                 None => None,
             },
@@ -22,7 +22,7 @@ impl<'a> Mpeg<'a> {
     pub fn minor_version(&self) -> Option<u32> {
         let tree = &self.atom_list;
         match tree {
-            Some(t) => match t.solid_type_search_path::<atoms::Ftyp>("ftyp") {
+            Some(t) => match t.solid_type_search_path::<atoms::Ftyp>("ftyp", None) {
                 Some(val) => val.minor_version,
                 None => None,
             },
@@ -33,7 +33,7 @@ impl<'a> Mpeg<'a> {
     pub fn minor_brands(&self) -> Option<Vec<String>> {
         let tree = &self.atom_list;
         match tree {
-            Some(t) => match t.solid_type_search_path::<atoms::Ftyp>("ftyp") {
+            Some(t) => match t.solid_type_search_path::<atoms::Ftyp>("ftyp", None) {
                 Some(val) => val.minor_brands,
                 None => None,
             },

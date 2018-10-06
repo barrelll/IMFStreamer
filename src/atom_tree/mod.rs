@@ -58,7 +58,11 @@ where
         self.root.push(n);
     }
 
-    pub fn solid_type_search_path<'p, N: BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
+    pub fn solid_type_search_path<'p, N: BuildNode + Name<'p>>(
+        &self,
+        path: &str,
+        child_num: Option<u32>,
+    ) -> Option<N> {
         let paths: Vec<&str> = path.split('.').collect();
         let iter = self.root.iter();
         for node in iter {
@@ -77,7 +81,7 @@ where
                             }
                             ret + paths[len - 1]
                         };
-                        return node.solid_type_search_path::<N>(path.as_str());
+                        return node.solid_type_search_path::<N>(path.as_str(), child_num);
                     }
                 }
                 None => return None,
@@ -86,7 +90,7 @@ where
         None
     }
 
-    pub fn node_search_path(&self, path: &str) -> Option<Rc<Node<'a, T>>> {
+    pub fn node_search_path(&self, path: &str, child_num: Option<u32>) -> Option<Rc<Node<'a, T>>> {
         let paths: Vec<&str> = path.split('.').collect();
         let iter = self.root.iter();
         for node in iter {
@@ -105,7 +109,7 @@ where
                             }
                             ret + paths[len - 1]
                         };
-                        return node.node_search_path(path.as_str());
+                        return node.node_search_path(path.as_str(), child_num);
                     }
                 }
                 None => return None,
@@ -162,7 +166,7 @@ where
         }
     }
 
-    fn children(
+    fn push_children(
         data: Option<&'a [u8]>,
         name: Option<&'a str>,
         parent: RefCell<Weak<Node<'a, &'a [u8]>>>,
@@ -186,7 +190,44 @@ where
         }
     }
 
-    pub fn solid_type_search_path<'p, N: BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
+    fn solid_type_children_of_type<'p, N: BuildNode + Name<'p>>(&self) -> Vec<Option<N>> {
+        let v: Vec<Option<N>> = self
+            .children
+            .iter()
+            .filter(|x| {
+                N::name().eq(x
+                    .name
+                    .expect("Node: node_children_of_type node.name doesn't exist"))
+            }).map(|x| {
+                N::build(
+                    x.data
+                        .expect("Node: node_children_of_type node.data doesn't exist"),
+                )
+            }).collect();
+        v
+    }
+
+    fn node_children_of_type<'p, N: Name<'p>>(&self) -> Vec<&Rc<Node<'a, T>>> {
+        let v: Vec<&Rc<Node<T>>> = self
+            .children
+            .iter()
+            .filter(|x| {
+                N::name().eq(x
+                    .name
+                    .expect("Node: node_children_of_type node.name doesn't exist"))
+            }).collect();
+        v
+    }
+
+    fn num_children(&self) -> usize {
+        self.children.len()
+    }
+
+    pub fn solid_type_search_path<'p, N: BuildNode + Name<'p>>(
+        &self,
+        path: &str,
+        child_num: Option<u32>,
+    ) -> Option<N> {
         let paths: Vec<&str> = path.split('.').collect();
         let iter = self.children.iter();
         for node in iter {
@@ -205,7 +246,7 @@ where
                             }
                             ret + paths[len - 1]
                         };
-                        return node.solid_type_search_path::<N>(path.as_str());
+                        return node.solid_type_search_path::<N>(path.as_str(), child_num);
                     }
                 }
                 None => return None,
@@ -214,7 +255,7 @@ where
         None
     }
 
-    pub fn node_search_path(&self, path: &str) -> Option<Rc<Node<'a, T>>> {
+    pub fn node_search_path(&self, path: &str, child_num: Option<u32>) -> Option<Rc<Node<'a, T>>> {
         let paths: Vec<&str> = path.split('.').collect();
         let iter = self.children.iter();
         for node in iter {
@@ -233,7 +274,7 @@ where
                             }
                             ret + paths[len - 1]
                         };
-                        return node.node_search_path(path.as_str());
+                        return node.node_search_path(path.as_str(), child_num);
                     }
                 }
                 None => return None,
@@ -289,7 +330,7 @@ fn build<'a>(data: &'a [u8]) -> Vec<Rc<Node<'a, &[u8]>>> {
         idx = x;
         let name = str::from_utf8(&data[split + 4..split + 8]).ok();
         let parent = RefCell::new(Weak::new());
-        let node = Node::<&[u8]>::children(Some(&data[split..idx]), name, parent, y);
+        let node = Node::<&[u8]>::push_children(Some(&data[split..idx]), name, parent, y);
         root.push(node);
     }
     root
