@@ -1,6 +1,6 @@
 use atoms::{BuildNode, IsSlice, Name};
 
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct Tkhd {
     track_id: Option<u32>,
 }
