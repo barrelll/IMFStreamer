@@ -25,10 +25,9 @@ fn main() {
     let path = Path::new("..")
         .join("assets")
         .join("MP4s")
-        .join("big_buck_bunny.mp4");
+        .join("file_example_MP4_1920_18MG - Copy.mp4");
     let file_buffer = read_file_into_u8(&path).unwrap();
     let mpeg = Mpeg::new(&file_buffer);
-    println!("{:?}", mpeg);
     println!("{:?}", mpeg.major_brand());
     println!("{:?}", mpeg.minor_version());
     println!("{:?}", mpeg.minor_brands());

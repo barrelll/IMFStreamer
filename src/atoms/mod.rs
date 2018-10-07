@@ -62,19 +62,31 @@ where
     pub fn solid_type_search_path<'p, N: BuildNode + Name<'p>>(
         &self,
         path: &str,
-        child_num: Option<u32>,
     ) -> Option<N> {
         let paths: Vec<&str> = path.split('.').collect();
+        let idx: String = paths[0].rmatches(char::is_numeric).collect();
+        let idx = match idx.parse::<i32>() {
+            Ok(val) => val,
+            _ => 0,
+        };
+        let path_to_match: String = paths[0].matches(char::is_alphabetic).collect();
         let iter = self.root.iter();
+        let mut i = 0;
         for node in iter {
             match node.name {
                 Some(val) => {
-                    if val == paths[0] {
+                    if val == path_to_match {
                         let path = {
                             let mut ret = String::new();
                             let len = paths.len();
                             if len == 1 {
-                                return N::build(node.data.unwrap());
+
+                                if idx == i {
+                                    return N::build(node.data.unwrap());
+                                } else {
+                                    i += 1;
+                                    continue;
+                                }
                             }
                             let slice = &paths[1..len - 1];
                             for &p in slice {
@@ -82,7 +94,12 @@ where
                             }
                             ret + paths[len - 1]
                         };
-                        return node.solid_type_search_path::<N>(path.as_str(), child_num);
+                        if idx == i {
+                            return node.solid_type_search_path(path.as_str());
+                        } else {
+                            i += 1;
+                            continue;
+                        }
                     }
                 }
                 None => return None,
@@ -91,18 +108,31 @@ where
         None
     }
 
-    pub fn node_search_path(&self, path: &str, child_num: Option<u32>) -> Option<Rc<Node<'a, T>>> {
+    pub fn node_search_path(&self, path: &str) -> Option<Rc<Node<'a, T>>> {
         let paths: Vec<&str> = path.split('.').collect();
+        let idx: String = paths[0].rmatches(char::is_numeric).collect();
+        let idx = match idx.parse::<i32>() {
+            Ok(val) => val,
+            _ => 0,
+        };
+        let path_to_match: String = paths[0].matches(char::is_alphabetic).collect();
         let iter = self.root.iter();
+        let mut i = 0;
         for node in iter {
             match node.name {
                 Some(val) => {
-                    if val == paths[0] {
+                    if val == path_to_match {
                         let path = {
                             let mut ret = String::new();
                             let len = paths.len();
                             if len == 1 {
-                                return Some(Rc::clone(node));
+
+                                if idx == i {
+                                    return Some(Rc::clone(node));
+                                } else {
+                                    i += 1;
+                                    continue;
+                                }
                             }
                             let slice = &paths[1..len - 1];
                             for &p in slice {
@@ -110,7 +140,12 @@ where
                             }
                             ret + paths[len - 1]
                         };
-                        return node.node_search_path(path.as_str(), child_num);
+                        if idx == i {
+                            return node.node_search_path(path.as_str());
+                        } else {
+                            i += 1;
+                            continue;
+                        }
                     }
                 }
                 None => return None,
@@ -227,19 +262,31 @@ where
     pub fn solid_type_search_path<'p, N: BuildNode + Name<'p>>(
         &self,
         path: &str,
-        child_num: Option<u32>,
     ) -> Option<N> {
         let paths: Vec<&str> = path.split('.').collect();
+        let idx: String = paths[0].rmatches(char::is_numeric).collect();
+        let idx = match idx.parse::<i32>() {
+            Ok(val) => val,
+            _ => 0,
+        };
+        let path_to_match: String = paths[0].matches(char::is_alphabetic).collect();
         let iter = self.children.iter();
+        let mut i = 0;
         for node in iter {
             match node.name {
                 Some(val) => {
-                    if val == paths[0] {
+                    if val == path_to_match {
                         let path = {
                             let mut ret = String::new();
                             let len = paths.len();
                             if len == 1 {
-                                return N::build(node.data.unwrap());
+
+                                if idx == i {
+                                    return N::build(node.data.unwrap());
+                                } else {
+                                    i += 1;
+                                    continue;
+                                }
                             }
                             let slice = &paths[1..len - 1];
                             for &p in slice {
@@ -247,7 +294,12 @@ where
                             }
                             ret + paths[len - 1]
                         };
-                        return node.solid_type_search_path::<N>(path.as_str(), child_num);
+                        if idx == i {
+                            return node.solid_type_search_path(path.as_str());
+                        } else {
+                            i += 1;
+                            continue;
+                        }
                     }
                 }
                 None => return None,
@@ -256,18 +308,31 @@ where
         None
     }
 
-    pub fn node_search_path(&self, path: &str, child_num: Option<u32>) -> Option<Rc<Node<'a, T>>> {
+    pub fn node_search_path(&self, path: &str) -> Option<Rc<Node<'a, T>>> {
         let paths: Vec<&str> = path.split('.').collect();
+        let idx: String = paths[0].rmatches(char::is_numeric).collect();
+        let idx = match idx.parse::<i32>() {
+            Ok(val) => val,
+            _ => 0,
+        };
+        let path_to_match: String = paths[0].matches(char::is_alphabetic).collect();
         let iter = self.children.iter();
+        let mut i = 0;
         for node in iter {
             match node.name {
                 Some(val) => {
-                    if val == paths[0] {
+                    if val == path_to_match {
                         let path = {
                             let mut ret = String::new();
                             let len = paths.len();
                             if len == 1 {
-                                return Some(Rc::clone(node));
+
+                                if idx == i {
+                                    return Some(Rc::clone(node));
+                                } else {
+                                    i += 1;
+                                    continue;
+                                }
                             }
                             let slice = &paths[1..len - 1];
                             for &p in slice {
@@ -275,7 +340,12 @@ where
                             }
                             ret + paths[len - 1]
                         };
-                        return node.node_search_path(path.as_str(), child_num);
+                        if idx == i {
+                            return node.node_search_path(path.as_str());
+                        } else {
+                            i += 1;
+                            continue;
+                        }
                     }
                 }
                 None => return None,
@@ -331,8 +401,10 @@ fn build<'a>(data: &'a [u8]) -> Vec<Rc<Node<'a, &[u8]>>> {
         idx = x;
         let name = str::from_utf8(&data[split + 4..split + 8]).ok();
         let parent = RefCell::new(Weak::new());
-        let node = Node::<&[u8]>::push_children(Some(&data[split..idx]), name, parent, y);
-        root.push(node);
+        if idx <= data.len() {
+            let node = Node::<&[u8]>::push_children(Some(&data[split..idx]), name, parent, y);
+            root.push(node);
+        }
     }
     root
 }
