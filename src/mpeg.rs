@@ -40,18 +40,6 @@ impl<'a> Mpeg<'a> {
             None => None,
         }
     }
-
-    pub fn t_grab_traks(&self) -> Option<Vec<Option<iso_p12::Trak>>> {
-        let tree = &self.atom_list;
-        match tree {
-            Some(t) => {
-                let parent = t.node_search_path("moov").expect("can't find moov");
-                let traks = parent.solid_type_children_of_type::<iso_p12::Trak>();
-                Some(traks)
-            }
-            None => None,
-        }
-    }
 }
 
 impl<'a> Mpeg<'a> {

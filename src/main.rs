@@ -31,6 +31,5 @@ fn main() {
     println!("{:?}", mpeg.major_brand());
     println!("{:?}", mpeg.minor_version());
     println!("{:?}", mpeg.minor_brands());
-    println!("{:?}", mpeg.t_grab_traks());
     /*Renderer::new("Test render mp4", 640, 360).run();*/
 }
