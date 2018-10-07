@@ -59,10 +59,7 @@ where
         self.root.push(n);
     }
 
-    pub fn solid_type_search_path<'p, N: BuildNode + Name<'p>>(
-        &self,
-        path: &str,
-    ) -> Option<N> {
+    pub fn solid_type_search_path<'p, N: BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
         let paths: Vec<&str> = path.split('.').collect();
         let idx: String = paths[0].rmatches(char::is_numeric).collect();
         let idx = match idx.parse::<i32>() {
@@ -80,7 +77,6 @@ where
                             let mut ret = String::new();
                             let len = paths.len();
                             if len == 1 {
-
                                 if idx == i {
                                     return N::build(node.data.unwrap());
                                 } else {
@@ -126,7 +122,6 @@ where
                             let mut ret = String::new();
                             let len = paths.len();
                             if len == 1 {
-
                                 if idx == i {
                                     return Some(Rc::clone(node));
                                 } else {
@@ -259,10 +254,7 @@ where
         self.children.len()
     }
 
-    pub fn solid_type_search_path<'p, N: BuildNode + Name<'p>>(
-        &self,
-        path: &str,
-    ) -> Option<N> {
+    pub fn solid_type_search_path<'p, N: BuildNode + Name<'p>>(&self, path: &str) -> Option<N> {
         let paths: Vec<&str> = path.split('.').collect();
         let idx: String = paths[0].rmatches(char::is_numeric).collect();
         let idx = match idx.parse::<i32>() {
@@ -280,7 +272,6 @@ where
                             let mut ret = String::new();
                             let len = paths.len();
                             if len == 1 {
-
                                 if idx == i {
                                     return N::build(node.data.unwrap());
                                 } else {
@@ -326,7 +317,6 @@ where
                             let mut ret = String::new();
                             let len = paths.len();
                             if len == 1 {
-
                                 if idx == i {
                                     return Some(Rc::clone(node));
                                 } else {
