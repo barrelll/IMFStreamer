@@ -76,3 +76,8 @@ trait BaseDescriptor {
 trait BaseCommand {
     fn tag(&self) -> DescriptorCommandTag;
 }
+
+
+trait ObjectDescriptorBase : BaseDescriptor {
+    
+}
