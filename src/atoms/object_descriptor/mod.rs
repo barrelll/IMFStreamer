@@ -1,5 +1,6 @@
 //object descriptor's defined in iso 14496 part 1
 mod object_descriptor_update;
+mod object_descriptor_remove;
 
 enum DescriptorClassTag {
     Forbidden1 = 0x00,
