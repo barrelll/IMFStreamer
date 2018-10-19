@@ -44,7 +44,7 @@ impl<'a> Mpeg<'a> {
     pub fn find_iods(&self) -> Option<iso_p14::Iods> {
         let tree = &self.atom_list;
         match tree {
-            Some(t) => t.solid_type_search_path::<iso_p14::Iods>("ftyp"),
+            Some(t) => t.solid_type_search_path::<iso_p14::Iods>("moov.iods"),
             None => None,
         }
     }

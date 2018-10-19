@@ -1,8 +1,8 @@
-use atoms::{BuildNode, IsSlice, Name};
+use atoms::{iso_p14::base_descriptors::ObjectDescriptor, BuildNode, IsSlice, Name};
 
 #[derive(Debug, Default, Clone)]
 pub struct Iods {
-    //    od: ObjectDescriptor;
+    od: Option<ObjectDescriptor>,
 }
 
 impl<'a> Name<'a> for Iods {
@@ -12,7 +12,8 @@ impl<'a> Name<'a> for Iods {
 }
 
 impl BuildNode for Iods {
-    fn build<T: IsSlice<Item = u8>>(_data: T) -> Option<Self> {
-        Some(Iods {})
+    fn build<T: IsSlice<Item = u8>>(data: T) -> Option<Self> {
+        let od = ObjectDescriptor::from_u8_slice(&data.as_slice()[12..]);
+        Some(Iods { od })
     }
 }
