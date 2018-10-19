@@ -75,7 +75,7 @@ pub struct ObjectDescriptor {
     reserved: Option<[bool; 5]>,
     url_length: Option<[bool; 8]>,
     url_string: Option<String>,
-    ext_descr: Option<u32>,
+    ext_descr: Vec<ESDescriptor>,
 }
 
 impl ObjectDescriptor {
@@ -91,7 +91,6 @@ impl ObjectDescriptor {
                 panic!("Object descriptor tag doesn't match the object descriptor base tags");
             }
         });
-        let orig = Cursor::new(&data[1..3]).read_u16::<BigEndian>().unwrap() >> 6;
         let od_id = Some({
             let mut ret_val = [false; 10];
             let val = Cursor::new(&data[1..3]).read_u16::<BigEndian>().unwrap() >> 6;
@@ -100,17 +99,13 @@ impl ObjectDescriptor {
             }
             ret_val
         });
-        let url_flag =
-            Some(Cursor::new(&data[1..3]).read_u16::<BigEndian>().unwrap() & (1 << 11) != 0);
+        let url_flag = Some(Cursor::new(&data[2..3]).read_u8().unwrap() & (1 << 6) != 0);
+        match url_flag {
+            Some(true) => {
 
-        //        if url_flag == 1 {
-        //            let url_length = Cursor::new(&data[4..5]).read_u8().unwrap();
-        //            let url_string = String::from_utf8(data[5..url_length as usize].to_vec());
-        //            println!("url_length {:?} {:b} {:x} {:X}", url_length, url_length, url_length, url_length);
-        //            println!("url_string {:?}", url_string);
-        //        } else {
-        //            // build more descriptors
-        //        }
+            },
+            _ => {},
+        }
         Some(ObjectDescriptor {
             tag,
             od_id,
@@ -119,3 +114,7 @@ impl ObjectDescriptor {
         })
     }
 }
+
+#[repr(align(8))]
+#[derive(Debug, Default, Clone)]
+struct ESDescriptor {}

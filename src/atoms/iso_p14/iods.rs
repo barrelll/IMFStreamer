@@ -1,5 +1,6 @@
 use atoms::{iso_p14::base_descriptors::ObjectDescriptor, BuildNode, IsSlice, Name};
 
+#[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct Iods {
     od: Option<ObjectDescriptor>,
