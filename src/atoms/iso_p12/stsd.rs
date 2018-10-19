@@ -1,5 +1,6 @@
 use atoms::{build, BuildNode, IsSlice, Name};
 
+#[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct Stsd {
     sample_entries: Vec<Box<i32>>,

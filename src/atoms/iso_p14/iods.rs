@@ -11,7 +11,7 @@ impl<'a> Name<'a> for Iods {
 }
 
 impl BuildNode for Iods {
-    fn build<T: IsSlice<Item = u8>>(data: T) -> Option<Self> {
+    fn build<T: IsSlice<Item = u8>>(_data: T) -> Option<Self> {
         Some(Iods {})
     }
 }

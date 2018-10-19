@@ -1,5 +1,6 @@
 use atoms::{BuildNode, IsSlice, Name};
 
+#[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct Tkhd {
     track_id: Option<u32>,
