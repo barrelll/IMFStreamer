@@ -6,7 +6,7 @@ pub struct InitialObjectDescriptor {
     od_id: Option<[bool; 10]>,
     url_flag: Option<bool>,
     reserved: Option<[bool; 5]>,
-    url_length: Option<[bool; 8]>,
+    url_length: Option<u8>,
     url_string: Option<String>,
     include_inline_profile_level_flag: Option<bool>,
     od_profile_level_indication: Option<u8>,
@@ -21,6 +21,15 @@ impl InitialObjectDescriptor {
     pub fn from_u8_slice(data: &[u8]) -> Option<InitialObjectDescriptor> {
         use byteorder::{BigEndian, ReadBytesExt};
         use std::io::Cursor;
+        for n in data {
+            let mut s = format!("{:b}", n);
+            if s.len() < 8 {
+                for _ in 0..8 - s.len() {
+                    s.insert( 0,'0');
+                }
+            }
+            print!("{} ",s);
+        }
         let tag = Some(match Cursor::new(&data[..1]).read_u8().unwrap() {
             0x02 => DescrBaseTags::InitialObjectDescrTag,
             0x10 => DescrBaseTags::MP4IODTag,
@@ -28,11 +37,21 @@ impl InitialObjectDescriptor {
                 panic!("Object descriptor tag doesn't match the object descriptor base tags");
             }
         });
+        let length = Cursor::new(&data[1..2]).read_u8().unwrap();
+        println!("\nlength? {:?} {:?}", length, data.len());
         let od_id = Some({
             let mut ret_val = [false; 10];
-            let val = Cursor::new(&data[1..3]).read_u16::<BigEndian>().unwrap() >> 6;
-            for i in 0..10 {
-                ret_val[i] = val & (1 << i + 1) != 0
+            let mut s_val = [false; 10];
+            let val = Cursor::new(&data[1..3]).read_u16::<BigEndian>().unwrap();
+            let val2 = Cursor::new(&data[1..3]).read_u16::<BigEndian>().unwrap();
+            println!("\nval: {:b}", val2);
+            for i in 6..16 {
+                print!("\ni bitshifted by {} :\n\t {} ", i,val2 & (1 << i) != 0);
+                s_val[i-6] = val2 & (1 << i) != 0
+            }
+            println!("\n{:?}", s_val);
+            for i in 6..16 {
+                ret_val[i-6] = val & (1 << i) != 0
             }
             ret_val
         });
@@ -52,6 +71,10 @@ impl InitialObjectDescriptor {
                 let audio_profile_level_indication = Cursor::new(&data[5..6]).read_u8().ok();
                 let visual_profile_level_indication = Cursor::new(&data[6..7]).read_u8().ok();
                 let graphics_profile_level_indication = Cursor::new(&data[7..8]).read_u8().ok();
+                println!("\n{:x}", Cursor::new(&data[8..9]).read_u8().unwrap());
+               // let es_id = Some(Cursor::new(&data[9..11]).read_u16::<BigEndian>().unwrap());
+               // println!("{:?}", es_id);
+                println!("{:?}", data);
                 Some(InitialObjectDescriptor {
                     tag,
                     od_id,
