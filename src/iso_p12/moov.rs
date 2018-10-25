@@ -1,4 +1,4 @@
-use atoms::{BuildNode, IsSlice, Name};
+use {BuildNode, IsSlice, Name};
 
 #[derive(Debug, Default, Clone)]
 pub struct Moov {

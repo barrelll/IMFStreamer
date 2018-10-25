@@ -1,4 +1,4 @@
-use atoms::{iso_p14::base_descriptors::InitialObjectDescriptor, BuildNode, IsSlice, Name};
+use {iso_p14::base_descriptors::InitialObjectDescriptor, BuildNode, IsSlice, Name};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -18,10 +18,10 @@ impl BuildNode for Iods {
             let mut s = format!("{:b}", n);
             if s.len() < 8 {
                 for _ in 0..8 - s.len() {
-                    s.insert( 0,'0');
+                    s.insert(0, '0');
                 }
             }
-            print!("{} ",s);
+            print!("{} ", s);
         }
         let od = InitialObjectDescriptor::from_u8_slice(&data.as_slice()[12..]);
         Some(Iods { od })

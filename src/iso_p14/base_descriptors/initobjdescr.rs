@@ -19,9 +19,9 @@ pub struct InitialObjectDescriptor {
 
 impl InitialObjectDescriptor {
     pub fn from_u8_slice(data: &[u8]) -> Option<InitialObjectDescriptor> {
-        use byteorder::{BigEndian, ReadBytesExt};
+        use byteorder::ReadBytesExt;
         use std::io::Cursor;
-        let tag = Some(match Cursor::new(&data[..1]).read_u8().unwrap() {
+        let _tag = Some(match Cursor::new(&data[..1]).read_u8().unwrap() {
             0x02 => DescrBaseTags::InitialObjectDescrTag,
             0x10 => DescrBaseTags::MP4IODTag,
             _ => {
@@ -29,8 +29,6 @@ impl InitialObjectDescriptor {
             }
         });
         let length = Cursor::new(&data[1..2]).read_u8().unwrap();
-        //let tag2 = Cursor::new(&data[12..13]).read_u8().unwrap();
-        //println!("\nlength? {:?} {:?}, {}", length, data.len(), tag2);
         println!("\nlength? {:?} {:?}", length, data.len());
         None
     }

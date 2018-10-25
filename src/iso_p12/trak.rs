@@ -1,4 +1,4 @@
-use atoms::{BuildNode, IsSlice, Name};
+use {BuildNode, IsSlice, Name};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
