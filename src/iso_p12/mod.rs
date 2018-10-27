@@ -203,26 +203,3 @@ pub use self::tsel::Tsel;
 pub use self::udta::Udta;
 pub use self::vmhd::Vmhd;
 pub use self::xml::Xml;
-
-/*** STATIC TYPES ***/
-pub static ATOM_TYPES_NCHILDREN: &'static [&str] = &[
-    "feci", "free", "frma", "ftyp", "idat", "mdat", "segr", "skip", "styp", "tref",
-];
-
-pub static ATOM_TYPES_WCHILDREN: &'static [&str] = &[
-    "cinf", "dinf", "edts", "mdia", "meco", "mfra", "minf", "moof", "moov", "mvex", "paen", "rinf",
-    "schi", "sinf", "stbl", "strd", "strk", "traf", "trak", "udta",
-];
-
-pub static FULL_ATOM_TYPES_NCHILDREN: &'static [&str] = &[
-    "assp", "bxml", "chnl", "co64", "cprt", "cslg", "ctts", "dmix", "elng", "elst", "fecr", "fire",
-    "fpar", "gitn", "hdlr", "hmhd", "iloc", "kind", "leva", "ludt", "mdhd", "mehd", "mere", "mfhd",
-    "mfro", "mvhd", "nmhd", "padb", "pdin", "pitm", "prft", "saio", "saiz", "sbgp", "schm", "sdtp",
-    "sidx", "smhd", "stco", "stdp", "stri", "stsc", "stsg", "stsh", "stss", "stsz", "stts", "stz2",
-    "subs", "tfdt", "tfhd", "tfra", "tkhd", "trex", "trun", "tsel", "vmhd", "xml ",
-];
-
-pub static FULL_ATOM_TYPES_WCHILDREN: &'static [&str] = &[
-    "dref", "fiin", "iinf", "ipro", "iref", "meta", "sgpd", "srpp", "ssix", "stsd", "stvi", "trep",
-    "trgr",
-];
