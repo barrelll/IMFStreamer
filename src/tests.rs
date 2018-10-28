@@ -3,7 +3,7 @@
 #[test]
 fn file_stream() {
     use std::{fs::File, path::Path};
-    use AdamTree;
+    use MediaStreamTree;
     let cargoman = env!("CARGO_MANIFEST_DIR");
     let path = Path::new(cargoman)
         .join("..")
@@ -13,8 +13,8 @@ fn file_stream() {
         .join("MPEG")
         .join("ISOBMFF-Conformance")
         .join("isobmff")
-        .join("14_large.mp4");
+        .join("01_simple.mp4");
     let mut handle = File::open(path).expect("Error opening file");
-    let mut atree = AdamTree::new(&handle);
-    let moov = atree.search_tree("moov.trak1.tkhd");
+    let node = handle.searchtree_stype::<super::iso_p12::Ftyp>("ftyp");
+    println!("Node {:?}", node);
 }

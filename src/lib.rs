@@ -4,7 +4,11 @@ pub mod iso_p12;
 pub mod iso_p14;
 mod tests;
 
-use std::fs::File;
+use byteorder::{BigEndian, ReadBytesExt};
+use std::{
+    fs::File,
+    io::{Cursor, Error, ErrorKind, Read, Result, Seek, SeekFrom},
+};
 
 pub trait Name<'a> {
     fn name() -> &'a str;
@@ -37,96 +41,139 @@ impl<'a> IsSlice for Vec<u8> {
     }
 }
 
-#[derive(Debug, Default, Clone)]
-pub struct AdamTree<'a> {
-    fhandle: Option<&'a File>,
-    root: Option<Vec<Rc<Node<'a>>>>,
+pub trait MediaStreamTree {
+    fn searchtree_stype<T: BuildNode>(&mut self, search: &str) -> Result<T>;
+    fn searchtree(&mut self, search: &str) -> Result<Node>;
 }
 
-impl<'a> AdamTree<'a> {
-    fn new(fhandle: &'a File) -> AdamTree<'a> {
-        let fhandle = Some(fhandle);
-        AdamTree {
-            fhandle,
-            ..Default::default()
-        }
+impl MediaStreamTree for File {
+    fn searchtree_stype<T: BuildNode>(&mut self, search: &str) -> Result<T> {
+        let node = self.searchtree(search)?;
+        solid_ntype::<T>(self, &node)
     }
 
-    fn search_tree(&mut self, search_name: &'a str) -> Result<Node<'a>, String> {
-        use byteorder::{BigEndian, ReadBytesExt};
-        use std::io::{Cursor, Read, Seek, SeekFrom};
+    fn searchtree(&mut self, search: &str) -> Result<Node> {
+        let paths: Vec<&str> = search.split('.').collect();
+        let mut slice = Slice(0, self.metadata()?.len(), 0);
+        let mut node = Node {
+            ..Default::default()
+        };
+        for path in paths {
+            let idx: String = path.rmatches(char::is_numeric).collect();
+            let idx = match idx.parse::<usize>() {
+                Ok(val) => val,
+                _ => 0,
+            };
+            node = search_slice(slice, self, &path[..4].to_ascii_lowercase(), idx)?;
+            slice = node.slice;
+        }
+        Ok(node)
+    }
+}
 
-        let paths: Vec<&str> = search_name.split('.').collect();
-        let idx: String = paths[0].rmatches(char::is_numeric).collect();
-        let idx = match idx.parse::<i32>() {
+fn solid_ntype<T: BuildNode>(fstream: &mut File, n: &Node) -> Result<T> {
+    let buffer_size = n.slice.1 - n.slice.0;
+    let mut buf = vec![0; buffer_size as usize];
+    println!("{:?}, {:?}", buffer_size, buf);
+    fstream.seek(SeekFrom::Start(n.slice.0))?;
+    fstream.read_exact(&mut buf)?;
+    T::build::<&[u8]>(&buf[..]).ok_or(Error::new(
+        ErrorKind::InvalidData,
+        format!("Data can't be read properly?"),
+    ))
+}
+
+fn search_slice(s: Slice, handle: &mut File, atomname: &str, idx: usize) -> Result<Node> {
+    let len = handle.metadata()?.len();
+    let mut buf: [u8; 8] = [0; 8];
+    let mut offset = 8;
+    let mut cur_pos = handle.seek(SeekFrom::Start(s.0 + s.2))?;
+    let mut enclosed_idx = 0;
+
+    while handle.read_exact(&mut buf).is_ok() {
+        let name = match str::from_utf8(&buf[4..8]) {
             Ok(val) => val,
-            _ => 0,
+            Err(e) => {
+                return Err(Error::new(
+                    ErrorKind::InvalidData,
+                    format!("Unable to read name, {}", e),
+                ))
+            }
         };
 
-        println!("{:?}, {:?}", paths, idx);
+        let prevnodeendat = cur_pos;
 
-        let mut buf: [u8; 4] = [0; 4];
-        let root = self.root.as_ref();
-        match root {
-            Some(val) => {}
-            None => {
-                let mut handle = self
-                    .fhandle
-                    .expect("File handle doesn't exist for AdamTree");
-                while handle.read_exact(&mut buf).is_ok() {
-                    let cursor_s = handle.seek(SeekFrom::Current(0)).unwrap() - 4;
-                    let size = match Cursor::new(&buf).read_u32::<BigEndian>() {
-                        Ok(val) => match val {
-                            0 => {
-                                let len = handle.metadata().unwrap().len();
-                                len
-                            }
-                            1 => {
-                                let mut buf: [u8; 8] = [0; 8];
-                                handle.seek(SeekFrom::Current(4));
-                                handle.read_exact(&mut buf);
-                                let ret = Cursor::new(&buf).read_u64::<BigEndian>().unwrap();
-                                handle.seek(SeekFrom::Current(-12));
-                                ret
-                            }
-                            _ => val as u64,
-                        },
-                        _ => return Err("".to_string()),
-                    };
-                    let cursor_e = cursor_s + size;
-                    if handle.read_exact(&mut buf).is_ok() {
-                        let name = str::from_utf8(&buf).ok();
-                        let slice = Slice(cursor_s, cursor_e);
-                        let parent = RefCell::new(Weak::new());
-                        let node = Node::new(slice, name, parent);
-                        println!(
-                            "cursor_s {:?}, size {:?}, cursor_e {:?}, name {:?}",
-                            cursor_s, size, cursor_e, name
-                        );
-                    } else {
-                        break;
-                    }
-                    handle.seek(SeekFrom::Current(size as i64 - 8));
+        let size = match Cursor::new(&buf[..4]).read_u32::<BigEndian>() {
+            Ok(val) => match val {
+                0 => len,
+                1 => {
+                    offset = 16;
+                    let mut buf: [u8; 8] = [0; 8];
+                    let _ = handle.read_exact(&mut buf)?;
+                    Cursor::new(&buf[..]).read_u64::<BigEndian>()?
+                }
+                _ => val as u64,
+            },
+            Err(e) => {
+                return Err(Error::new(
+                    ErrorKind::InvalidData,
+                    format!("Unable to read size, {}", e),
+                ))
+            }
+        };
+
+        cur_pos = match handle.seek(SeekFrom::Current((size - offset) as i64)) {
+            Ok(val) => {
+                if val > len {
+                    return Err(Error::new(
+                        ErrorKind::InvalidInput,
+                        format!("Atom {} not found, name searched for = {} Cursor pos is greater than file size {} > {}", atomname, name, val, len),
+                    ));
+                } else {
+                    val
                 }
             }
+            Err(e) => {
+                return Err(Error::new(
+                    ErrorKind::NotFound,
+                    format!("Atom {} not found, Error {:?}", atomname, e),
+                ))
+            }
+        };
+
+        if atomname.eq(name) {
+            if enclosed_idx == idx {
+                return Ok(Node::new(
+                    Slice(prevnodeendat, cur_pos, offset),
+                    Some(name.to_string()),
+                    RefCell::new(Weak::new()),
+                ));
+            }
+            enclosed_idx += 1;
         }
-        Err("Not impl'd yet".to_string())
     }
+    Err(Error::new(
+        ErrorKind::NotFound,
+        format!(
+            "Atom {} not found, Cursor position {:?}, length of file {:?}",
+            atomname, cur_pos, len
+        ),
+    ))
 }
 
-#[derive(Debug, Default, Clone)]
-struct Slice(u64, u64);
+#[derive(Debug, Default, Clone, Copy)]
+struct Slice(u64, u64, u64);
 
 #[derive(Debug, Default, Clone)]
-pub struct Node<'a> {
+pub struct Node {
     slice: Slice,
-    name: Option<&'a str>,
-    parent: RefCell<Weak<Node<'a>>>,
-    children: Vec<Rc<Node<'a>>>,
+    name: Option<String>,
+    parent: RefCell<Weak<Node>>,
+    children: Vec<Rc<Node>>,
 }
 
-impl<'a> Node<'a> {
-    fn new(slice: Slice, name: Option<&'a str>, parent: RefCell<Weak<Node<'a>>>) -> Node<'a> {
+impl Node {
+    fn new(slice: Slice, name: Option<String>, parent: RefCell<Weak<Node>>) -> Node {
         Node {
             slice,
             name,
@@ -135,7 +182,7 @@ impl<'a> Node<'a> {
         }
     }
 
-    fn default() -> Node<'a> {
+    fn default() -> Node {
         Node {
             ..Default::default()
         }
