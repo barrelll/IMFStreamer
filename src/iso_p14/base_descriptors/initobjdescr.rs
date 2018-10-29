@@ -1,4 +1,4 @@
-use super::{esdescr::ESDescriptor, DescrBaseTags};
+use super::{DescrBaseTags, Descriptor};
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct InitialObjectDescriptor {
@@ -14,7 +14,7 @@ pub struct InitialObjectDescriptor {
     audio_profile_level_indication: Option<u8>,
     visual_profile_level_indication: Option<u8>,
     graphics_profile_level_indication: Option<u8>,
-    ext_descr: Vec<ESDescriptor>,
+    descriptors: Vec<Box<dyn Descriptor>>,
 }
 
 impl InitialObjectDescriptor {

@@ -3,6 +3,11 @@ mod initobjdescr;
 pub use self::esdescr::ESDescriptor;
 pub use self::initobjdescr::InitialObjectDescriptor;
 
+use std::{
+    clone::Clone,
+    fmt::{Debug, Display, Formatter, Result},
+};
+
 #[derive(Debug, Clone)]
 pub enum DescrBaseTags {
     Forbidden = 0x00,
@@ -56,6 +61,13 @@ pub enum DescrBaseTags {
     Forbidden2 = 0xFF,
 }
 
+impl Display for DescrBaseTags {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "{}", self)
+    }
+}
+
+#[derive(Debug, Clone)]
 pub enum CommandBaseTags {
     Forbidden1 = 0x00,
     ObjectDescrUpdateTag = 0x01,
@@ -69,4 +81,28 @@ pub enum CommandBaseTags {
     Reserved1 = 0x09 - 0xBF,
     UserPrivate = 0xC0 - 0xFE,
     Forbidden2 = 0xFF,
+}
+
+impl Display for CommandBaseTags {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "{}", self)
+    }
+}
+
+trait Descriptor: Debug + Display {
+    fn tag(&self) -> DescrBaseTags;
+    fn size(&self) -> u64;
+    fn d_clone(&self) -> Box<Descriptor>;
+}
+
+fn solid_type<T: Descriptor>(d: T, data: &[u8]) -> Option<T> {
+    match d.tag() {
+        _ => None,
+    }
+}
+
+impl Clone for Box<Descriptor> {
+    fn clone(&self) -> Box<Descriptor> {
+        self.d_clone()
+    }
 }

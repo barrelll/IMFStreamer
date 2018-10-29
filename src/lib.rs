@@ -74,7 +74,6 @@ impl MediaStreamTree for File {
 fn solid_ntype<T: BuildNode>(fstream: &mut File, n: &Node) -> Result<T> {
     let buffer_size = n.slice.1 - n.slice.0;
     let mut buf = vec![0; buffer_size as usize];
-    println!("{:?}, {:?}", buffer_size, buf);
     fstream.seek(SeekFrom::Start(n.slice.0))?;
     fstream.read_exact(&mut buf)?;
     T::build::<&[u8]>(&buf[..]).ok_or(Error::new(
@@ -162,7 +161,8 @@ fn search_slice(s: Slice, handle: &mut File, atomname: &str, idx: usize) -> Resu
 }
 
 #[derive(Debug, Default, Clone, Copy)]
-struct Slice(u64, u64, u64);
+/// contains the start and end of each node relevant to the file size, with the last u64 being the amount of bytes to increment for size/name
+pub struct Slice(u64, u64, u64);
 
 #[derive(Debug, Default, Clone)]
 pub struct Node {
