@@ -20,13 +20,14 @@ impl BuildNode for Ftyp {
         use std::io::Cursor;
 
         let d = data.as_slice();
+        let err = "Ftyp can't parse minor brands";
         let major_brand = String::from_utf8(d[8..12].to_vec()).ok();
         let minor_version = Cursor::new(&d[12..16]).read_u32::<BigEndian>().ok();
         let minor_brands: Option<Vec<String>> = Some(
             d[16..]
                 .to_vec()
                 .chunks(4)
-                .map(|x| String::from_utf8(x.to_vec()).unwrap())
+                .map(|x| String::from_utf8(x.to_vec()).expect(err))
                 .collect(),
         );
         Some(Ftyp {
