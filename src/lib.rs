@@ -9,9 +9,12 @@ mod tests;
 
 use byteorder::{BigEndian, ReadBytesExt};
 use std::{
+    cell::RefCell,
     fs::File,
     io::{Cursor, Error, ErrorKind, Read, Result, Seek, SeekFrom},
-    cell::RefCell, rc::Rc, rc::Weak, str,
+    rc::Rc,
+    rc::Weak,
+    str,
 };
 
 pub trait Name<'a> {

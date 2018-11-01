@@ -1,4 +1,4 @@
-use super::{DescrBaseTags, DescrBase, es_id_inc::ESIDInc, DescrBuilder};
+use super::{es_id_inc::ESIDInc, DescrBase, DescrBaseTags, DescrBuilder};
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct InitialObjectDescriptor {
@@ -29,7 +29,7 @@ impl InitialObjectDescriptor {
             }
         });
         let descr = Box::new(ESIDInc::build(data).unwrap()) as Box<DescrBase>;
-        let descriptors = vec![descr];
+        let _ = vec![descr];
         let length = Cursor::new(&data[1..2]).read_u8().unwrap();
         println!("\nlength? {:?} {:?}", length, data.len());
         None

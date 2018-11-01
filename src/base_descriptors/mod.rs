@@ -1,13 +1,13 @@
-mod esdescr;
 mod es_id_inc;
+mod esdescr;
 mod initobjdescr;
-pub use self::esdescr::ESDescriptor;
 pub use self::es_id_inc::ESIDInc;
+pub use self::esdescr::ESDescriptor;
 pub use self::initobjdescr::InitialObjectDescriptor;
 
 use downcast_rs::Downcast;
-use ::IsSlice;
 use std::fmt::{Debug, Display, Formatter, Result};
+use IsSlice;
 
 #[derive(Debug, Clone)]
 pub enum DescrBaseTags {
@@ -109,5 +109,7 @@ impl Debug for DescrBase {
 }
 
 pub trait DescrBuilder {
-    fn build<T: IsSlice>(d: T) -> Option<Self> where Self: Sized;
+    fn build<T: IsSlice>(d: T) -> Option<Self>
+    where
+        Self: Sized;
 }

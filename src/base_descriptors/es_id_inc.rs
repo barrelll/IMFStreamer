@@ -1,5 +1,5 @@
 use super::{DescrBase, DescrBuilder};
-use ::IsSlice;
+use IsSlice;
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -15,8 +15,6 @@ impl DescrBase for ESIDInc {
 
 impl DescrBuilder for ESIDInc {
     fn build<T: IsSlice>(d: T) -> Option<Self> {
-        Some(ESIDInc {
-            track_id: Some(0),
-        })
+        Some(ESIDInc { track_id: Some(0) })
     }
 }

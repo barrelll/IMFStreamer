@@ -1,5 +1,5 @@
+use base_descriptors::InitialObjectDescriptor;
 use {BuildNode, IsSlice, Name};
-use ::base_descriptors::InitialObjectDescriptor;
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
