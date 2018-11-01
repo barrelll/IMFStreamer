@@ -6,6 +6,7 @@ pub use self::es_id_inc::ESIDInc;
 pub use self::initobjdescr::InitialObjectDescriptor;
 
 use downcast_rs::Downcast;
+use ::IsSlice;
 use std::fmt::{Debug, Display, Formatter, Result};
 
 #[derive(Debug, Clone)]
@@ -89,20 +90,24 @@ impl Display for CommandBaseTags {
     }
 }
 
-trait RawDescr: Downcast {
-    fn rdclone(&self) -> Box<RawDescr>;
+pub trait DescrBase: Downcast {
+    fn rdclone(&self) -> Box<DescrBase>;
 }
 
-impl_downcast!(RawDescr);
+impl_downcast!(DescrBase);
 
-impl Clone for Box<RawDescr> {
-    fn clone(&self) -> Box<dyn RawDescr> {
+impl Clone for Box<DescrBase> {
+    fn clone(&self) -> Box<dyn DescrBase> {
         self.rdclone()
     }
 }
 
-impl Debug for RawDescr {
+impl Debug for DescrBase {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "RawDescr")
+        write!(f, "DescrBase")
     }
+}
+
+pub trait DescrBuilder {
+    fn build<T: IsSlice>(d: T) -> Option<Self> where Self: Sized;
 }

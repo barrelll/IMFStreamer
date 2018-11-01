@@ -1,4 +1,5 @@
-use {iso_p14::base_descriptors::InitialObjectDescriptor, BuildNode, IsSlice, Name};
+use {BuildNode, IsSlice, Name};
+use ::base_descriptors::InitialObjectDescriptor;
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
