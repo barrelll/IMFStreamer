@@ -113,3 +113,5 @@ pub trait DescrBuilder {
     where
         Self: Sized;
 }
+
+fn _descrfactory() {}

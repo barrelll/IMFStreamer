@@ -20,7 +20,7 @@ fn handle(filename: &str) -> File {
 
 #[test]
 fn file_stream() {
-    let mut handle = handle("13_long.mp4");
+    let mut handle = handle("a1-foreman-QCIF.mp4");
     let node = handle.searchtree_stype::<super::iso_p12::Ftyp>("ftyp");
     println!("Node {:?}", node);
 }
