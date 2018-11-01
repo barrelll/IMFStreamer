@@ -1,4 +1,6 @@
-use super::{DescrBase, DescrBaseTags};
+use super::{DescrBase, DescrBaseTags, DescrBuilder};
+use IsSlice;
+
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct ESDescriptor {
@@ -16,5 +18,11 @@ pub struct ESDescriptor {
 impl DescrBase for ESDescriptor {
     fn rdclone(&self) -> Box<DescrBase> {
         Box::new(self.clone())
+    }
+}
+
+impl DescrBuilder for ESDescriptor {
+    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
+        None
     }
 }
