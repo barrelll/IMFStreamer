@@ -14,7 +14,7 @@ impl DescrBase for ESIDInc {
 }
 
 impl DescrBuilder for ESIDInc {
-    fn build<T: IsSlice>(_d: T) -> Option<Self> {
+    fn build<T: IsSlice<Item = u8>>(_d: T) -> Option<Self> {
         Some(ESIDInc { track_id: Some(0) })
     }
 }

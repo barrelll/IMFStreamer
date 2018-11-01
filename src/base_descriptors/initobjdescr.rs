@@ -1,4 +1,5 @@
 use super::{es_id_inc::ESIDInc, DescrBase, DescrBaseTags, DescrBuilder};
+use IsSlice;
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct InitialObjectDescriptor {
@@ -17,8 +18,9 @@ pub struct InitialObjectDescriptor {
     descriptors: Vec<Box<dyn DescrBase>>,
 }
 
-impl InitialObjectDescriptor {
-    pub fn from_u8_slice(data: &[u8]) -> Option<InitialObjectDescriptor> {
+impl DescrBuilder for InitialObjectDescriptor {
+    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
+        let data = d.as_slice();
         use byteorder::ReadBytesExt;
         use std::io::Cursor;
         let _tag = Some(match Cursor::new(&data[..1]).read_u8().unwrap() {

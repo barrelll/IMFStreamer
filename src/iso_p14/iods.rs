@@ -1,4 +1,4 @@
-use base_descriptors::InitialObjectDescriptor;
+use base_descriptors::{DescrBuilder, InitialObjectDescriptor};
 use {BuildNode, IsSlice, Name};
 
 #[repr(align(8))]
@@ -24,7 +24,7 @@ impl BuildNode for Iods {
             }
             print!("{} ", s);
         }
-        let od = InitialObjectDescriptor::from_u8_slice(&data.as_slice()[12..]);
+        let od = InitialObjectDescriptor::build(&data.as_slice()[12..]);
         Some(Iods { od })
     }
 }

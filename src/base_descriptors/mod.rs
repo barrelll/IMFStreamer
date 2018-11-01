@@ -109,7 +109,7 @@ impl Debug for DescrBase {
 }
 
 pub trait DescrBuilder {
-    fn build<T: IsSlice>(d: T) -> Option<Self>
+    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self>
     where
         Self: Sized;
 }
