@@ -1,7 +1,13 @@
-use super::{esdescr::ESDescriptor, DescrBaseTags};
+use super::{RawDescr, DescrBaseTags};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
-struct ESIDInc {
+pub struct ESIDInc {
     track_id: Option<u32>,
+}
+
+impl RawDescr for ESIDInc {
+    fn rdclone(&self) -> Box<RawDescr> {
+        Box::new(self.clone())
+    }
 }

@@ -1,4 +1,6 @@
 #![allow(dead_code)]
+#[macro_use]
+extern crate downcast_rs;
 extern crate byteorder;
 pub mod iso_p12;
 pub mod iso_p14;

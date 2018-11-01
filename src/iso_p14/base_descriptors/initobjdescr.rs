@@ -1,4 +1,4 @@
-use super::{DescrBaseTags, Descriptor};
+use super::{DescrBaseTags, RawDescr, es_id_inc::ESIDInc};
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct InitialObjectDescriptor {
@@ -14,7 +14,7 @@ pub struct InitialObjectDescriptor {
     audio_profile_level_indication: Option<u8>,
     visual_profile_level_indication: Option<u8>,
     graphics_profile_level_indication: Option<u8>,
-    descriptors: Vec<Box<dyn Descriptor>>,
+    descriptors: Vec<Box<dyn RawDescr>>,
 }
 
 impl InitialObjectDescriptor {
@@ -28,6 +28,8 @@ impl InitialObjectDescriptor {
                 panic!("Object descriptor tag doesn't match the object descriptor base tags");
             }
         });
+        let descr = Box::new(ESIDInc { ..Default::default() }) as Box<RawDescr>;
+        let descriptors = vec![descr];
         let length = Cursor::new(&data[1..2]).read_u8().unwrap();
         println!("\nlength? {:?} {:?}", length, data.len());
         None

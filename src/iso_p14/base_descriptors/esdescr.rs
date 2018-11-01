@@ -1,4 +1,4 @@
-use super::DescrBaseTags;
+use super::{DescrBaseTags, RawDescr};
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct ESDescriptor {
@@ -11,4 +11,10 @@ pub struct ESDescriptor {
     depends_on_es_id: Option<u16>,
     url_length: Option<u8>,
     url_string: Option<String>,
+}
+
+impl RawDescr for ESDescriptor {
+    fn rdclone(&self) -> Box<RawDescr> {
+        Box::new(self.clone())
+    }
 }

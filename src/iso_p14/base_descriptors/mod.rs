@@ -1,12 +1,12 @@
 mod esdescr;
+mod es_id_inc;
 mod initobjdescr;
 pub use self::esdescr::ESDescriptor;
+pub use self::es_id_inc::ESIDInc;
 pub use self::initobjdescr::InitialObjectDescriptor;
 
-use std::{
-    clone::Clone,
-    fmt::{Debug, Display, Formatter, Result},
-};
+use downcast_rs::Downcast;
+use std::fmt::{Debug, Display, Formatter, Result};
 
 #[derive(Debug, Clone)]
 pub enum DescrBaseTags {
@@ -89,20 +89,20 @@ impl Display for CommandBaseTags {
     }
 }
 
-trait Descriptor: Debug + Display {
-    fn tag(&self) -> DescrBaseTags;
-    fn size(&self) -> u64;
-    fn d_clone(&self) -> Box<Descriptor>;
+trait RawDescr: Downcast {
+    fn rdclone(&self) -> Box<RawDescr>;
 }
 
-fn solid_type<T: Descriptor>(d: T, data: &[u8]) -> Option<T> {
-    match d.tag() {
-        _ => None,
+impl_downcast!(RawDescr);
+
+impl Clone for Box<RawDescr> {
+    fn clone(&self) -> Box<dyn RawDescr> {
+        self.rdclone()
     }
 }
 
-impl Clone for Box<Descriptor> {
-    fn clone(&self) -> Box<Descriptor> {
-        self.d_clone()
+impl Debug for RawDescr {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "RawDescr")
     }
 }
