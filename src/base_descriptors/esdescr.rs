@@ -22,7 +22,7 @@ impl DescrBase for ESDescriptor {
 }
 
 impl DescrBuilder for ESDescriptor {
-    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
+    fn build<T: IsSlice<Item = u8>>(_d: T) -> Option<Self> {
         None
     }
 }
