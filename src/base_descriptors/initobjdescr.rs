@@ -21,19 +21,38 @@ pub struct InitialObjectDescriptor {
 impl DescrBuilder for InitialObjectDescriptor {
     fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
         let data = d.as_slice();
-        use byteorder::ReadBytesExt;
+        use byteorder::{ReadBytesExt, BigEndian};
         use std::io::Cursor;
-        let _tag = Some(match Cursor::new(&data[..1]).read_u8().unwrap() {
+        let tag = Some(match Cursor::new(&data[..1]).read_u8().unwrap() {
             0x02 => DescrBaseTags::InitialObjectDescrTag,
             0x10 => DescrBaseTags::MP4IODTag,
             _ => {
                 panic!("Object descriptor tag doesn't match the object descriptor base tags");
             }
         });
+
+        let mut cursor = 1;
+        let mut size_of_instance = 0;
+        let mut next_byte = true;
+        while next_byte {
+            let size = Cursor::new(&data[cursor..cursor+1]).read_u8().unwrap();
+            cursor+=1;
+            next_byte = size & (1 << 7) > 0;
+            size_of_instance = size_of_instance<<7 | size;
+        }
+
+        let id = Cursor::new(&data[inner_cursor..inner_cursor+2]).read_u16::<BigEndian>().unwrap();
+        for i in 0..10 {
+            let val = id & (1 << i) > 0;
+            print!("{:?},", val);
+        }
         let descr = Box::new(ESIDInc::build(data).unwrap()) as Box<DescrBase>;
         let _ = vec![descr];
-        let length = Cursor::new(&data[1..2]).read_u8().unwrap();
-        println!("\nlength? {:?} {:?}", length, data.len());
+        let iod = InitialObjectDescriptor {
+            tag,
+            ..Default::default()
+        };
+        println!("\n{:?}\n", iod);
         None
     }
 }
