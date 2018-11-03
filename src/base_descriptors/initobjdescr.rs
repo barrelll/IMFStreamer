@@ -30,7 +30,7 @@ impl DescrBuilder for InitialObjectDescriptor {
         let data = d.as_slice();
         use byteorder::{BigEndian, ReadBytesExt};
         use std::io::Cursor;
-        let tag = Some(match Cursor::new(&data[..1]).read_u8().unwrap() {
+        let tag = Some(match Cursor::new(&data[..1]).read_u8().expect("InitialObjectDescriptor error reading tag") {
             0x02 => DescrBaseTags::InitialObjectDescrTag,
             0x10 => DescrBaseTags::MP4IODTag,
             _ => {

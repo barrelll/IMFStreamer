@@ -130,7 +130,18 @@ fn size_of_instance(data: &[u8], cursor: &mut usize) -> u8 {
     size_of_instance
 }
 
-fn descrfactory(_data: &[u8]) -> Vec<Box<DescrBase>> {
-    let ret = Vec::<Box<DescrBase>>::new();
+fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
+    use byteorder::ReadBytesExt;
+    use std::io::Cursor;
+    let mut ret = Vec::<Box<DescrBase>>::new();
+    let mut cursor = 1;
+    match Cursor::new(&data[..1]).read_u8().expect("descrfactory: Error reading tag") {
+        0x0E => {
+            // DescrBaseTags::ESIDInc
+            let val = Box::new(ESIDInc::build(data).unwrap()) as Box<DescrBase>;
+            ret.push(val);
+        },
+        _ => {},
+    }
     ret
 }
