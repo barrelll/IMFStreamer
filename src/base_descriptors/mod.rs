@@ -142,7 +142,6 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
         (end as usize) + cursor
     };
     loop {
-        println!("cursor_s {:?}, cursor_e {:?}", cursor_s, cursor_e);
         match Cursor::new(&data[..1])
             .read_u8()
             .expect("descrfactory: Error reading tag")
