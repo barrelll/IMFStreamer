@@ -1,4 +1,4 @@
-use super::{DescrBase, DescrBuilder, size_of_instance, DescrBaseTags};
+use super::{size_of_instance, DescrBase, DescrBaseTags, DescrBuilder};
 use IsSlice;
 
 #[repr(align(8))]
@@ -20,7 +20,10 @@ impl DescrBuilder for ESIDInc {
         let data = d.as_slice();
         use byteorder::{BigEndian, ReadBytesExt};
         use std::io::Cursor;
-        let tag = Some(match Cursor::new(&data[..1]).read_u8().expect("ESIDInc error reading tag") {
+        let tag = Some(match Cursor::new(&data[..1])
+            .read_u8()
+            .expect("ESIDInc error reading tag")
+        {
             0x0E => DescrBaseTags::ESIDIncTag,
             _ => {
                 panic!("ESIDInc descriptor tag doesn't match the object descriptor base tags");
@@ -28,7 +31,9 @@ impl DescrBuilder for ESIDInc {
         });
         let mut cursor = 1;
         let size_of_instance = Some(size_of_instance(&data, &mut cursor));
-        let track_id = Cursor::new(&data[cursor..cursor+4]).read_u32::<BigEndian>().ok();
+        let track_id = Cursor::new(&data[cursor..cursor + 4])
+            .read_u32::<BigEndian>()
+            .ok();
         Some(ESIDInc {
             tag,
             size_of_instance,

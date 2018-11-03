@@ -133,15 +133,38 @@ fn size_of_instance(data: &[u8], cursor: &mut usize) -> u8 {
 fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
     use byteorder::ReadBytesExt;
     use std::io::Cursor;
+    let len = data.len();
     let mut ret = Vec::<Box<DescrBase>>::new();
-    let mut cursor = 1;
-    match Cursor::new(&data[..1]).read_u8().expect("descrfactory: Error reading tag") {
-        0x0E => {
-            // DescrBaseTags::ESIDInc
-            let val = Box::new(ESIDInc::build(data).unwrap()) as Box<DescrBase>;
-            ret.push(val);
-        },
-        _ => {},
+    let mut cursor_s = 0;
+    let mut cursor_e = {
+        let mut cursor = 1;
+        let end = size_of_instance(&data, &mut cursor);
+        (end as usize) + cursor
+    };
+    loop {
+        println!("cursor_s {:?}, cursor_e {:?}", cursor_s, cursor_e);
+        match Cursor::new(&data[..1])
+            .read_u8()
+            .expect("descrfactory: Error reading tag")
+        {
+            0x0E => {
+                // DescrBaseTags::ESIDInc
+                let val =
+                    Box::new(ESIDInc::build(&data[cursor_s..cursor_e]).unwrap()) as Box<DescrBase>;
+                ret.push(val);
+            }
+            _ => {}
+        }
+        cursor_s = cursor_e;
+        if cursor_e >= len {
+            break;
+        } else {
+            cursor_e = {
+                let mut cursor = 1;
+                let end = size_of_instance(&data[cursor_s..], &mut cursor);
+                (end as usize) + cursor + cursor_s
+            };
+        }
     }
     ret
 }
