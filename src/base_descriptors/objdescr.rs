@@ -32,8 +32,8 @@ impl DescrBuilder for ObjectDescriptor {
             .read_u8()
             .expect("ObjectDescriptor error reading tag")
         {
-            0x02 => DescrBaseTags::InitialObjectDescrTag,
-            0x10 => DescrBaseTags::MP4IODTag,
+            0x02 => DescrBaseTags::ObjectDescrTag,
+            0x10 => DescrBaseTags::MP4ODTag,
             _ => {
                 panic!("Object descriptor tag doesn't match the object descriptor base tags");
             }
