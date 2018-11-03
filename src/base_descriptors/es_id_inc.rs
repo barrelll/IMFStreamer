@@ -10,6 +10,10 @@ pub struct ESIDInc {
 }
 
 impl DescrBase for ESIDInc {
+    fn tag(&self) -> Option<DescrBaseTags> {
+        self.tag.clone()
+    }
+
     fn rdclone(&self) -> Box<DescrBase> {
         Box::new(self.clone())
     }

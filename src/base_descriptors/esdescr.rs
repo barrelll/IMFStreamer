@@ -16,6 +16,10 @@ pub struct ESDescriptor {
 }
 
 impl DescrBase for ESDescriptor {
+    fn tag(&self) -> Option<DescrBaseTags> {
+        self.tag.clone()
+    }
+
     fn rdclone(&self) -> Box<DescrBase> {
         Box::new(self.clone())
     }

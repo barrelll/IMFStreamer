@@ -20,6 +20,10 @@ pub struct InitialObjectDescriptor {
 }
 
 impl DescrBase for InitialObjectDescriptor {
+    fn tag(&self) -> Option<DescrBaseTags> {
+        self.tag.clone()
+    }
+
     fn rdclone(&self) -> Box<DescrBase> {
         Box::new(self.clone())
     }

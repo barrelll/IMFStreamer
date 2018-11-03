@@ -91,6 +91,7 @@ impl Display for CommandBaseTags {
 }
 
 pub trait DescrBase: Downcast {
+    fn tag(&self) -> Option<DescrBaseTags>;
     fn rdclone(&self) -> Box<DescrBase>;
 }
 
@@ -104,7 +105,7 @@ impl Clone for Box<DescrBase> {
 
 impl Debug for DescrBase {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "DescrBase")
+        write!(f, "DescrBase {{ {:?} }}", self.tag())
     }
 }
 
