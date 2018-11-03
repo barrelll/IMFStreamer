@@ -1,9 +1,11 @@
 mod es_id_inc;
 mod esdescr;
 mod initobjdescr;
+mod objdescr;
 pub use self::es_id_inc::ESIDInc;
 pub use self::esdescr::ESDescriptor;
 pub use self::initobjdescr::InitialObjectDescriptor;
+pub use self::objdescr::ObjectDescriptor;
 
 use downcast_rs::Downcast;
 use std::fmt::{Debug, Display, Formatter, Result};
