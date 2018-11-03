@@ -124,7 +124,9 @@ fn size_of_instance(data: &[u8], cursor: &mut usize) -> u8 {
     let mut size_of_instance = 0;
     let mut next_byte = true;
     while next_byte {
-        let size = Cursor::new(&data[c..c + 1]).read_u8().expect("size_of_instance error reading size byte");
+        let size = Cursor::new(&data[c..c + 1])
+            .read_u8()
+            .expect("size_of_instance error reading size byte");
         c += 1;
         next_byte = size & (1 << 7) > 0;
         size_of_instance = size_of_instance << 7 | size;
@@ -151,8 +153,9 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
         {
             0x0E => {
                 // DescrBaseTags::ESIDInc
-                let val =
-                    Box::new(ESIDInc::build(&data[cursor_s..cursor_e]).expect("ESIDInc not found?")) as Box<DescrBase>;
+                let val = Box::new(
+                    ESIDInc::build(&data[cursor_s..cursor_e]).expect("ESIDInc not found?"),
+                ) as Box<DescrBase>;
                 ret.push(val);
             }
             _ => {}

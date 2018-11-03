@@ -56,7 +56,6 @@ impl DescrBuilder for ObjectDescriptor {
             arr
         });
 
-
         let url_flag = Some({ id & (1 << 5) > 0 });
 
         match url_flag {
@@ -72,16 +71,16 @@ impl DescrBuilder for ObjectDescriptor {
                             ) {
                                 Ok(val) => Some(val),
                                 Err(e) => {
-                                    panic!("ObjectDescriptor error, cannot parse url_string. {:?}", e);
+                                    panic!(
+                                        "ObjectDescriptor error, cannot parse url_string. {:?}",
+                                        e
+                                    );
                                 }
                             };
                             Some(val)
                         }
                         Err(e) => {
-                            panic!(
-                                "ObjectDescriptor error, cannot parse url_length. {:?}",
-                                e
-                            );
+                            panic!("ObjectDescriptor error, cannot parse url_length. {:?}", e);
                         }
                     };
                 }
