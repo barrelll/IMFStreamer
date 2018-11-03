@@ -130,7 +130,7 @@ fn size_of_instance(data: &[u8], cursor: &mut usize) -> u8 {
     size_of_instance
 }
 
-fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
+fn descrfactory(_data: &[u8]) -> Vec<Box<DescrBase>> {
     let ret = Vec::<Box<DescrBase>>::new();
     ret
 }
