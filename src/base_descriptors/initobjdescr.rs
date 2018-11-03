@@ -4,12 +4,13 @@ use IsSlice;
 #[derive(Debug, Default, Clone)]
 pub struct InitialObjectDescriptor {
     tag: Option<DescrBaseTags>,
+    size_of_instance: Option<u8>,
     od_id: Option<[bool; 10]>,
-    url_flag: Option<bool>,
     reserved: Option<[bool; 4]>,
+    url_flag: Option<bool>,
+    include_inline_profile_level_flag: Option<bool>,
     url_length: Option<u8>,
     url_string: Option<String>,
-    include_inline_profile_level_flag: Option<bool>,
     od_profile_level_indication: Option<u8>,
     scene_profile_level_indication: Option<u8>,
     audio_profile_level_indication: Option<u8>,
@@ -32,7 +33,7 @@ impl DescrBuilder for InitialObjectDescriptor {
         });
 
         let mut cursor: usize = 1;
-        let _ = size_of_instance(data, &mut cursor);
+        let size_of_instance = Some(size_of_instance(data, &mut cursor));
         let id = Cursor::new(&data[cursor..cursor + 2])
             .read_u16::<BigEndian>()
             .unwrap();
@@ -90,12 +91,13 @@ impl DescrBuilder for InitialObjectDescriptor {
                 let descriptors = vec![descr];
                 Some(InitialObjectDescriptor {
                     tag,
+                    size_of_instance,
                     od_id,
                     url_flag,
-                    url_length,
-                    url_string,
                     reserved,
                     include_inline_profile_level_flag,
+                    url_length,
+                    url_string,
                     od_profile_level_indication,
                     scene_profile_level_indication,
                     audio_profile_level_indication,
