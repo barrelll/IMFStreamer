@@ -27,7 +27,7 @@ fn file_stream() {
 
 #[test]
 fn iods() {
-    let mut handle = handle("01_simple.mp4");
+    let mut handle = handle("a1-foreman-QCIF.mp4");
     let node = handle.searchtree_stype::<super::iso_p14::Iods>("moov.iods");
     println!("Node {:?}", node);
 }
