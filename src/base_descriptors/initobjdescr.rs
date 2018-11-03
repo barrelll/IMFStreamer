@@ -19,6 +19,12 @@ pub struct InitialObjectDescriptor {
     descriptors: Vec<Box<dyn DescrBase>>,
 }
 
+impl DescrBase for InitialObjectDescriptor {
+    fn rdclone(&self) -> Box<DescrBase> {
+        Box::new(self.clone())
+    }
+}
+
 impl DescrBuilder for InitialObjectDescriptor {
     fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
         let data = d.as_slice();
@@ -72,20 +78,28 @@ impl DescrBuilder for InitialObjectDescriptor {
                                 Ok(val) => Some(val),
                                 Err(e) => {
                                     panic!("InitialObjectDescriptor error, cannot parse url_string. {:?}", e);
-                                },
+                                }
                             };
                             Some(val)
                         }
                         Err(e) => {
-                            panic!("InitialObjectDescriptor error, cannot parse url_length. {:?}", e);
-                        },
+                            panic!(
+                                "InitialObjectDescriptor error, cannot parse url_length. {:?}",
+                                e
+                            );
+                        }
                     };
                 } else {
-                    od_profile_level_indication = Cursor::new(&data[cursor + 2..cursor + 3]).read_u8().ok();
-                    scene_profile_level_indication = Cursor::new(&data[cursor + 3..cursor + 4]).read_u8().ok();
-                    audio_profile_level_indication = Cursor::new(&data[cursor + 4..cursor + 5]).read_u8().ok();
-                    visual_profile_level_indication = Cursor::new(&data[cursor + 5..cursor + 6]).read_u8().ok();
-                    graphics_profile_level_indication = Cursor::new(&data[cursor + 6..cursor + 7]).read_u8().ok();
+                    od_profile_level_indication =
+                        Cursor::new(&data[cursor + 2..cursor + 3]).read_u8().ok();
+                    scene_profile_level_indication =
+                        Cursor::new(&data[cursor + 3..cursor + 4]).read_u8().ok();
+                    audio_profile_level_indication =
+                        Cursor::new(&data[cursor + 4..cursor + 5]).read_u8().ok();
+                    visual_profile_level_indication =
+                        Cursor::new(&data[cursor + 5..cursor + 6]).read_u8().ok();
+                    graphics_profile_level_indication =
+                        Cursor::new(&data[cursor + 6..cursor + 7]).read_u8().ok();
                 }
                 let descr = Box::new(ESIDInc::build(data).unwrap()) as Box<DescrBase>;
                 let descriptors = vec![descr];
