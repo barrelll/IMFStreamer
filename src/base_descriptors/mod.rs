@@ -140,6 +140,7 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
     use std::io::Cursor;
     let len = data.len();
     let mut ret = Vec::<Box<DescrBase>>::new();
+    if len == 0 { return ret }
     let mut cursor_s = 0;
     let mut cursor_e = {
         let mut cursor = 1;
