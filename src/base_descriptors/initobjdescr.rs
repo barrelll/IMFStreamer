@@ -49,7 +49,7 @@ impl DescrBuilder for InitialObjectDescriptor {
         let size_of_instance = Some(size_of_instance(data, &mut cursor));
         let id = Cursor::new(&data[cursor..cursor + 2])
             .read_u16::<BigEndian>()
-            .unwrap();
+            .expect("InitialObjectDescriptor error reading id bytes");
 
         let od_id = Some({
             let mut arr = [false; 10];
