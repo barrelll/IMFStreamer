@@ -17,6 +17,7 @@ impl<'a> BuildNode for Stsd {
         let data = data.as_slice();
         use byteorder::{BigEndian, ReadBytesExt};
         use std::io::Cursor;
+        // version and flags just before entry count
         let entry_count = Cursor::new(&data[12..16]).read_u32::<BigEndian>().ok();
         Some(Stsd {
             entry_count,
