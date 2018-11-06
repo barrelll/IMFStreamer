@@ -140,7 +140,9 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
     use std::io::Cursor;
     let len = data.len();
     let mut ret = Vec::<Box<DescrBase>>::new();
-    if len == 0 { return ret }
+    if len == 0 {
+        return ret;
+    }
     let mut cursor_s = 0;
     let mut cursor_e = {
         let mut cursor = 1;
@@ -152,6 +154,12 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
             .read_u8()
             .expect("descrfactory: Error reading tag")
         {
+            0x03 => {
+                let val = Box::new(
+                    ESDescriptor::build(&data[cursor_s..cursor_e]).expect("ESDescriptor not found?"),
+                ) as Box<DescrBase>;
+                ret.push(val);
+            },
             0x0E => {
                 // DescrBaseTags::ESIDInc
                 let val = Box::new(
@@ -159,7 +167,9 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
                 ) as Box<DescrBase>;
                 ret.push(val);
             }
-            _ => {}
+            val => {
+                println!("{:?}", val);
+            },
         }
         cursor_s = cursor_e;
         if cursor_e >= len {
