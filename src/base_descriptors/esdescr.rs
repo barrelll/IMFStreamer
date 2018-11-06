@@ -31,7 +31,7 @@ impl DescrBase for ESDescriptor {
 impl DescrBuilder for ESDescriptor {
     fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
         let data = d.as_slice();
-        use byteorder::{BigEndian, ReadBytesExt};
+        use byteorder::ReadBytesExt;
         use std::io::Cursor;
         let tag = Some(match Cursor::new(&data[..1])
             .read_u8()

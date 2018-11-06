@@ -65,12 +65,17 @@ impl MediaStreamTree for File {
         };
         for path in paths {
             let idx: String = path.rmatches(char::is_numeric).collect();
-            let idx = match idx.parse::<usize>() {
-                Ok(val) => val,
-                _ => 0,
+            let idx = if path.len() > 4 {
+                match idx.parse::<usize>() {
+                    Ok(val) => val,
+                    _ => 0,
+                }
+            } else {
+                0
             };
             node = search_slice(slice, self, &path[..4].to_ascii_lowercase(), idx)?;
             slice = node.slice;
+            println!("{:?}", node);
         }
         Ok(node)
     }

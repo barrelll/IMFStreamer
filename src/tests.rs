@@ -35,6 +35,6 @@ fn iods() {
 #[test]
 fn esds() {
     let mut handle = handle("fragment-random-access-1+AF8-rev1.mp4");
-    let node = handle.searchtree("moov.trak.mdia.mdhd.minf.stbl.stsd.mp4v");
+    let node = handle.searchtree_stype::<super::iso_p12::Stsd>("moov.trak.mdia.minf.stbl.stsd");
     println!("Node {:?}", node);
 }
