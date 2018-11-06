@@ -75,7 +75,6 @@ impl MediaStreamTree for File {
             };
             node = search_slice(slice, self, &path[..4].to_ascii_lowercase(), idx)?;
             slice = node.slice;
-            println!("{:?}", node);
         }
         Ok(node)
     }
