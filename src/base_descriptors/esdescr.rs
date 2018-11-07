@@ -42,7 +42,7 @@ impl DescrBuilder for ESDescriptor {
                 panic!("ESIDInc descriptor tag doesn't match the object descriptor base tags");
             }
         });
-        Some(ESDescriptor{
+        Some(ESDescriptor {
             tag,
             ..Default::default()
         })

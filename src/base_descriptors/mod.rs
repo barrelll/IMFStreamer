@@ -156,10 +156,11 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
         {
             0x03 => {
                 let val = Box::new(
-                    ESDescriptor::build(&data[cursor_s..cursor_e]).expect("ESDescriptor not found?"),
+                    ESDescriptor::build(&data[cursor_s..cursor_e])
+                        .expect("ESDescriptor not found?"),
                 ) as Box<DescrBase>;
                 ret.push(val);
-            },
+            }
             0x0E => {
                 // DescrBaseTags::ESIDInc
                 let val = Box::new(
@@ -169,7 +170,7 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
             }
             val => {
                 println!("{:?}", val);
-            },
+            }
         }
         cursor_s = cursor_e;
         if cursor_e >= len {

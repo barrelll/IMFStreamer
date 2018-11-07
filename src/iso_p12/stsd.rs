@@ -1,4 +1,4 @@
-use {BuildNode, IsSlice, Name, FullBox};
+use {BuildNode, FullBox, IsSlice, Name};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
