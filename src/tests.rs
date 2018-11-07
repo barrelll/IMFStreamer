@@ -19,22 +19,22 @@ fn handle(filename: &str) -> File {
 }
 
 #[test]
-fn file_stream() {
+fn ftyp() {
     let mut handle = handle("a1-foreman-QCIF.mp4");
     let node = handle.searchtree_stype::<super::iso_p12::Ftyp>("ftyp");
-    println!("Node {:?}", node);
+    assert!(node.is_ok())
 }
 
 #[test]
 fn iods() {
     let mut handle = handle("a1-foreman-QCIF.mp4");
     let node = handle.searchtree_stype::<super::iso_p14::Iods>("moov.iods");
-    println!("Node {:?}", node);
+    assert!(node.is_ok())
 }
 
 #[test]
-fn esds() {
+fn stsd() {
     let mut handle = handle("fragment-random-access-1+AF8-rev1.mp4");
     let node = handle.searchtree_stype::<super::iso_p12::Stsd>("moov.trak.mdia.minf.stbl.stsd");
-    println!("Node {:?}", node);
+    assert!(node.is_ok())
 }

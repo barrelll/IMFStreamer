@@ -1,4 +1,4 @@
-use {BuildNode, FullBox, IsSlice, Name, sample_entries::SampleEntry};
+use {BuildNode, FullBox, IsSlice, Name, sample_entries::{SampleEntry, samplefactory}};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -22,10 +22,11 @@ impl<'a> BuildNode for Stsd {
         // version and flags just before entry count
         let fullbox = FullBox::from(&data[8..12]).ok();
         let entry_count = Cursor::new(&data[12..16]).read_u32::<BigEndian>().ok();
+        let sample_entries = samplefactory(&data[16..]);
         Some(Stsd {
             fullbox,
             entry_count,
-            ..Default::default()
+            sample_entries,
         })
     }
 }

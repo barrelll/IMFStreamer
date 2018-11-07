@@ -19,7 +19,7 @@ impl Debug for SampleEntry {
     }
 }
 
-fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntry>> {
+pub fn samplefactory(_data: &[u8]) -> Vec<Box<SampleEntry>> {
     let ret = Vec::<Box<SampleEntry>>::new();
     ret
 }
