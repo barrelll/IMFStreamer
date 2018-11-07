@@ -23,12 +23,3 @@ pub fn samplefactory(_data: &[u8]) -> Vec<Box<SampleEntry>> {
     let ret = Vec::<Box<SampleEntry>>::new();
     ret
 }
-
-//#[derive(Debug, Default, Clone)]
-//struct SampleEntryTest;
-//
-//impl SampleEntry for SampleEntryTest {
-//    fn seclone(&self) -> Box<dyn SampleEntry> {
-//        Box::new(self.clone())
-//    }
-//}

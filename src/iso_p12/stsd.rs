@@ -1,4 +1,7 @@
-use {BuildNode, FullBox, IsSlice, Name, sample_entries::{SampleEntry, samplefactory}};
+use {
+    sample_entries::{samplefactory, SampleEntry},
+    BuildNode, FullBox, IsSlice, Name,
+};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
