@@ -174,6 +174,28 @@ fn search_slice(s: Slice, handle: &mut File, atomname: &str, idx: usize) -> Resu
 pub struct Slice(u64, u64, u64);
 
 #[derive(Debug, Default, Clone)]
+pub struct FullBox(u8, [bool; 24]);
+
+impl FullBox {
+    fn from(data: &[u8]) -> Result<Self> {
+        use byteorder::{BigEndian, ReadBytesExt};
+        use std::io::Cursor;
+        let version = Cursor::new(&data[..1]).read_u8()?;
+        let val = Cursor::new(&data[..4]).read_u32::<BigEndian>()?;
+        let flags = {
+            let mut arr_idx = 0;
+            let mut ret = [false; 24];
+            for idx in (0..24).rev() {
+                ret[arr_idx] = val & (1 << idx) > 0;
+                arr_idx += 1;
+            }
+            ret
+        };
+        Ok(FullBox(version, flags))
+    }
+}
+
+#[derive(Debug, Default, Clone)]
 pub struct Node {
     slice: Slice,
     name: Option<String>,
