@@ -2,6 +2,7 @@
 #[macro_use]
 extern crate downcast_rs;
 extern crate byteorder;
+pub mod sample_entries;
 pub mod base_descriptors;
 pub mod iso_p12;
 pub mod iso_p14;

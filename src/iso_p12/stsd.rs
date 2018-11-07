@@ -1,10 +1,11 @@
-use {BuildNode, FullBox, IsSlice, Name};
+use {BuildNode, FullBox, IsSlice, Name, sample_entries::SampleEntry};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct Stsd {
     fullbox: Option<FullBox>,
     entry_count: Option<u32>,
+    sample_entries: Vec<Box<dyn SampleEntry>>,
 }
 
 impl<'a> Name<'a> for Stsd {
