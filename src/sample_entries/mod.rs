@@ -1,6 +1,6 @@
 mod mp4_visual_sample_entry;
 
-use self::mp4_visual_sample_entry::MP4VisualSampleEntry;
+//use self::mp4_visual_sample_entry::MP4VisualSampleEntry;
 use byteorder::{BigEndian, ReadBytesExt};
 use downcast_rs::Downcast;
 use std::{
@@ -38,7 +38,7 @@ pub trait SampleBuilder {
 #[derive(Debug, Default, Clone)]
 pub struct SampleEntry {
     name: Option<String>,
-    reserved: Option<[u8; 8]>,
+    reserved: Option<[u8; 6]>,
     data_reference_index: Option<u16>,
 }
 
@@ -52,8 +52,8 @@ impl SampleBuilder for SampleEntry {
     fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
         let data = d.as_slice();
         let name = String::from_utf8(data[4..8].to_vec()).ok();
-        let reserved: Option<[u8; 8]> = Some([0; 8]);
-        let data_reference_index = Cursor::new(&data[40..42]).read_u16::<BigEndian>().ok();
+        let reserved: Option<[u8; 6]> = Some([0; 6]);
+        let data_reference_index = Cursor::new(&data[14..16]).read_u16::<BigEndian>().ok();
         Some(SampleEntry {
             name,
             reserved,
@@ -90,9 +90,48 @@ impl SampleBuilder for VisualSampleEntry {
     fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
         let data = d.as_slice();
         let sample_entry = SampleEntry::build(data);
+        let pre_defined1 = Cursor::new(&data[16..18]).read_u16::<BigEndian>().ok();
+        let reserved1 = Cursor::new(&data[18..20]).read_u16::<BigEndian>().ok();
+        let pre_defined2 = Some({
+            [
+                Cursor::new(&data[20..24])
+                    .read_u32::<BigEndian>()
+                    .expect("SampleBuilder, Error reading VisualSampleEntry"),
+                Cursor::new(&data[24..28])
+                    .read_u32::<BigEndian>()
+                    .expect("SampleBuilder, Error reading VisualSampleEntry"),
+                Cursor::new(&data[28..32])
+                    .read_u32::<BigEndian>()
+                    .expect("SampleBuilder, Error reading VisualSampleEntry"),
+            ]
+        });
+        let width = Cursor::new(&data[32..34]).read_u16::<BigEndian>().ok();
+        let height = Cursor::new(&data[34..36]).read_u16::<BigEndian>().ok();
+        let horiresolution = Cursor::new(&data[36..40]).read_u32::<BigEndian>().ok();
+        let vertresolution = Cursor::new(&data[40..44]).read_u32::<BigEndian>().ok();
+        let reserved2 = Cursor::new(&data[44..48]).read_u32::<BigEndian>().ok();
+        let frame_count = Cursor::new(&data[48..50]).read_u16::<BigEndian>().ok();
+        let compressorname = Some({
+            let mut array = [0; 32];
+            array.copy_from_slice(&data[50..82]);
+            array
+        });
+        let depth = Cursor::new(&data[82..84]).read_u16::<BigEndian>().ok();
+        let pre_defined3 = Cursor::new(&data[84..86]).read_i16::<BigEndian>().ok();
         Some(VisualSampleEntry {
             sample_entry,
-            ..Default::default()
+            pre_defined1,
+            reserved1,
+            pre_defined2,
+            width,
+            height,
+            horiresolution,
+            vertresolution,
+            reserved2,
+            frame_count,
+            compressorname,
+            depth,
+            pre_defined3,
         })
     }
 }
