@@ -1,7 +1,14 @@
-use downcast_rs::Downcast;
-use std::fmt::{Debug, Formatter, Result};
-
 mod mp4_visual_sample_entry;
+
+use self::mp4_visual_sample_entry::MP4VisualSampleEntry;
+use byteorder::{BigEndian, ReadBytesExt};
+use downcast_rs::Downcast;
+use std::{
+    fmt::{Debug, Formatter, Result},
+    io::Cursor,
+    str::from_utf8,
+};
+use IsSlice;
 
 pub trait SampleEntryBase: Downcast {
     fn seclone(&self) -> Box<SampleEntryBase>;
@@ -21,9 +28,16 @@ impl Debug for SampleEntryBase {
     }
 }
 
+pub trait SampleBuilder {
+    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self>
+    where
+        Self: Sized;
+}
+
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct SampleEntry {
+    name: Option<String>,
     reserved: Option<[u8; 8]>,
     data_reference_index: Option<u16>,
 }
@@ -31,6 +45,20 @@ pub struct SampleEntry {
 impl SampleEntryBase for SampleEntry {
     fn seclone(&self) -> Box<SampleEntryBase> {
         Box::new(self.clone())
+    }
+}
+
+impl SampleBuilder for SampleEntry {
+    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
+        let data = d.as_slice();
+        let name = String::from_utf8(data[4..8].to_vec()).ok();
+        let reserved: Option<[u8; 8]> = Some([0; 8]);
+        let data_reference_index = Cursor::new(&data[40..42]).read_u16::<BigEndian>().ok();
+        Some(SampleEntry {
+            name,
+            reserved,
+            data_reference_index,
+        })
     }
 }
 
@@ -58,6 +86,17 @@ impl SampleEntryBase for VisualSampleEntry {
     }
 }
 
+impl SampleBuilder for VisualSampleEntry {
+    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
+        let data = d.as_slice();
+        let sample_entry = SampleEntry::build(data);
+        Some(VisualSampleEntry {
+            sample_entry,
+            ..Default::default()
+        })
+    }
+}
+
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct AudioSampleEntry {
@@ -71,10 +110,8 @@ impl SampleEntryBase for AudioSampleEntry {
 }
 
 pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
-    use byteorder::{BigEndian, ReadBytesExt};
-    use std::{io::Cursor, str::from_utf8};
     let len = data.len();
-    let ret = Vec::<Box<SampleEntryBase>>::new();
+    let mut ret = Vec::<Box<SampleEntryBase>>::new();
     loop {
         let size = match Cursor::new(&data[0..4]).read_u32::<BigEndian>() {
             Ok(val) => match val {
@@ -90,7 +127,13 @@ pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
         };
         match from_utf8(&data[4..8]) {
             Ok(val) => match val {
-                "mp4v" => {}
+                "mp4v" => {
+                    let vse = Box::new(
+                        VisualSampleEntry::build(data)
+                            .expect("samplefactory: mp4v: Error reading sample entry"),
+                    ) as Box<SampleEntryBase>;
+                    ret.push(vse);
+                }
                 _ => {}
             },
             Err(e) => {
@@ -99,6 +142,8 @@ pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
         };
         if size >= len {
             break;
+        } else {
+
         }
     }
     ret
