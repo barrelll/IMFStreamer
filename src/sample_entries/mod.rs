@@ -19,7 +19,12 @@ impl Debug for SampleEntry {
     }
 }
 
-pub fn samplefactory(_data: &[u8]) -> Vec<Box<SampleEntry>> {
+pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntry>> {
+    use byteorder::{BigEndian, ReadBytesExt};
+    use std::{io::Cursor, str::from_utf8};
     let ret = Vec::<Box<SampleEntry>>::new();
+    let size = Cursor::new(&data[0..4]).read_u32::<BigEndian>().unwrap();
+    let name = from_utf8(&data[4..8]);
+    println!("{:?} {:?}", size, name);
     ret
 }
