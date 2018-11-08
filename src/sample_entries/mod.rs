@@ -48,8 +48,6 @@ struct VisualSampleEntry {
     compressorname: Option<[u8; 32]>,
     depth: Option<u16>,
     pre_defined3: Option<i16>,
-    clap: Option<u8>,
-    pasp: Option<u8>,
 }
 
 impl SampleEntryBase for VisualSampleEntry {
