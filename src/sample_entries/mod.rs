@@ -1,6 +1,8 @@
 use downcast_rs::Downcast;
 use std::fmt::{Debug, Formatter, Result};
 
+mod mp4_visual_sample_entry;
+
 pub trait SampleEntryBase: Downcast {
     fn seclone(&self) -> Box<SampleEntryBase>;
 }
@@ -21,7 +23,7 @@ impl Debug for SampleEntryBase {
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
-struct SampleEntry {
+pub struct SampleEntry {
     reserved: Option<[u8; 8]>,
     data_reference_index: Option<u16>,
 }
@@ -34,7 +36,7 @@ impl SampleEntryBase for SampleEntry {
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
-struct VisualSampleEntry {
+pub struct VisualSampleEntry {
     sample_entry: Option<SampleEntry>,
     pre_defined1: Option<u16>,
     reserved1: Option<u16>,
@@ -58,7 +60,7 @@ impl SampleEntryBase for VisualSampleEntry {
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
-struct AudioSampleEntry {
+pub struct AudioSampleEntry {
     sample_entry: Option<SampleEntry>,
 }
 
