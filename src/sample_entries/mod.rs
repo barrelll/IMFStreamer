@@ -37,11 +37,19 @@ impl SampleEntryBase for SampleEntry {
 struct VisualSampleEntry {
     sample_entry: Option<SampleEntry>,
     pre_defined1: Option<u16>,
-    reserved: Option<u16>,
+    reserved1: Option<u16>,
     pre_defined2: Option<[u32; 3]>,
     width: Option<u16>,
     height: Option<u16>,
     horiresolution: Option<u32>,
+    vertresolution: Option<u32>,
+    reserved2: Option<u32>,
+    frame_count: Option<u16>,
+    compressorname: Option<[u8; 32]>,
+    depth: Option<u16>,
+    pre_defined3: Option<i16>,
+    clap: Option<u8>,
+    pasp: Option<u8>,
 }
 
 impl SampleEntryBase for VisualSampleEntry {
