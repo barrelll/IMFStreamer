@@ -38,4 +38,3 @@ fn path(filename: &str) -> PathBuf {
 fn handle(filename: &str) -> File {
     File::open(path(filename)).expect("Error opening file")
 }
-

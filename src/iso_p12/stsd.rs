@@ -1,5 +1,5 @@
 use {
-    sample_entries::{samplefactory, SampleEntry},
+    sample_entries::{samplefactory, SampleEntryBase},
     BuildNode, FullBox, IsSlice, Name,
 };
 
@@ -8,7 +8,7 @@ use {
 pub struct Stsd {
     fullbox: Option<FullBox>,
     entry_count: Option<u32>,
-    sample_entries: Vec<Box<dyn SampleEntry>>,
+    sample_entries: Vec<Box<dyn SampleEntryBase>>,
 }
 
 impl<'a> Name<'a> for Stsd {
