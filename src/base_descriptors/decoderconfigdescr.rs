@@ -82,7 +82,6 @@ impl DescrBuilder for DecoderConfigDescriptor {
             Some(DescrBaseTags::DecSpecificInfoTag) => {
                 *val = Box::new(DecoderSpecificInfo::build_specdecinfo(
                     objecttypeindication.unwrap(),
-                    &data[cursor + 13..],
                 )) as Box<DescrBase>;
             }
             Some(_) => {}

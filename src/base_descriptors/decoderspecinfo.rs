@@ -6,6 +6,7 @@ use IsSlice;
 pub struct DecoderSpecificInfo {
     tag: Option<DescrBaseTags>,
     size_of_instance: Option<u8>,
+    datav: Vec<u8>,
 }
 
 impl DescrBase for DecoderSpecificInfo {
@@ -19,7 +20,7 @@ impl DescrBase for DecoderSpecificInfo {
 }
 
 impl DecoderSpecificInfo {
-    pub fn build_specdecinfo(_object_identifier: u8, _d: &[u8]) -> DecoderSpecificInfo {
+    pub fn build_specdecinfo(_object_identifier: u8) -> DecoderSpecificInfo {
         DecoderSpecificInfo {
             ..Default::default()
         }
@@ -42,10 +43,11 @@ impl DescrBuilder for DecoderSpecificInfo {
         });
         let mut cursor = 1;
         let size_of_instance = Some(size_of_instance(data, &mut cursor));
+        let datav = data[cursor..cursor + size_of_instance.unwrap() as usize].to_vec();
         Some(DecoderSpecificInfo {
             tag,
             size_of_instance,
-            ..Default::default()
+            datav,
         })
     }
 }
