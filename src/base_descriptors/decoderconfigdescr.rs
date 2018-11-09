@@ -67,7 +67,6 @@ impl DescrBuilder for DecoderConfigDescriptor {
         });
         let max_bit_rate = Cursor::new(&data[cursor+4..cursor+8]).read_u32::<BigEndian>().ok();
         let avg_bit_rate = Cursor::new(&data[cursor+8..cursor+12]).read_u32::<BigEndian>().ok();
-        println!("Building descriptors!");
         let descriptors = descrfactory(&data[12..]);
         Some(DecoderConfigDescriptor {
             tag,

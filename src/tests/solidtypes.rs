@@ -18,8 +18,8 @@ fn iods() {
 
 #[test]
 fn esds() {
-    let mut handle = handle("fragment-random-access-1+AF8-rev1.mp4");
-    let node = handle.searchtree_stype::<::iso_p12::Stsd>("moov.trak.mdia.minf.stbl.stsd");
+    let mut handle = handle("a1-foreman-QCIF.mp4");
+    let node = handle.searchtree_stype::<::iso_p12::Stsd>("moov.trak1.mdia.minf.stbl.stsd");
     assert!(node.is_ok())
 }
 
