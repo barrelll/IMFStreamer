@@ -1,11 +1,11 @@
 mod decoderconfigdescr;
+mod decoderspecinfo;
 mod es_id_inc;
 mod esdescr;
 mod initobjdescr;
 mod objdescr;
-mod decoderspecinfo;
-pub use self::decoderspecinfo::DecoderSpecificInfo;
 pub use self::decoderconfigdescr::DecoderConfigDescriptor;
+pub use self::decoderspecinfo::DecoderSpecificInfo;
 pub use self::es_id_inc::ESIDInc;
 pub use self::esdescr::ESDescriptor;
 pub use self::initobjdescr::InitialObjectDescriptor;
@@ -173,7 +173,11 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
                 ret.push(val);
             }
             0x05 => {
-                println!("DecSpecificInfoTag!");
+                let val = Box::new(
+                    DecoderSpecificInfo::build(&data[cursor_s..cursor_e])
+                        .expect("DecoderConfigDescriptor not found?"),
+                ) as Box<DescrBase>;
+                ret.push(val);
             }
             0x0E => {
                 let val = Box::new(

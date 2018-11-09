@@ -1,4 +1,4 @@
-use super::{descrfactory, size_of_instance, DescrBase, DescrBaseTags, DescrBuilder};
+use super::{size_of_instance, DescrBase, DescrBaseTags, DescrBuilder};
 use IsSlice;
 
 #[repr(align(8))]
@@ -18,8 +18,29 @@ impl DescrBase for DecoderSpecificInfo {
     }
 }
 
+impl DecoderSpecificInfo {
+    pub fn build_specdecinfo(&mut self, object_identifier: u8, d: &[u8]) {}
+}
+
 impl DescrBuilder for DecoderSpecificInfo {
     fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
-        None
+        let data = d.as_slice();
+        use byteorder::ReadBytesExt;
+        use std::io::Cursor;
+        let tag = Some(match Cursor::new(&data[..1])
+            .read_u8()
+            .expect("ESDescriptor error reading tag")
+        {
+            0x05 => DescrBaseTags::DecSpecificInfoTag,
+            _ => {
+                panic!("DecoderSpecificInfo descriptor tag doesn't match the object descriptor base tags");
+            }
+        });
+        let mut cursor = 1;
+        let size_of_instance = Some(size_of_instance(data, &mut cursor));
+        Some(DecoderSpecificInfo {
+            tag,
+            size_of_instance,
+        })
     }
 }
