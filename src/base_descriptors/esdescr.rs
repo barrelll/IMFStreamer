@@ -1,4 +1,4 @@
-use super::{size_of_instance, DescrBase, DescrBaseTags, DescrBuilder, descrfactory};
+use super::{descrfactory, size_of_instance, DescrBase, DescrBaseTags, DescrBuilder};
 use IsSlice;
 
 #[repr(align(8))]
@@ -65,19 +65,25 @@ impl DescrBuilder for ESDescriptor {
         cursor += 3;
         let mut depends_on_es_id = None;
         if let Some(true) = stream_dependence_flag {
-            depends_on_es_id = Cursor::new(&data[cursor..cursor+2]).read_u16::<BigEndian>().ok();
+            depends_on_es_id = Cursor::new(&data[cursor..cursor + 2])
+                .read_u16::<BigEndian>()
+                .ok();
             cursor += 2;
         }
         let mut url_length = None;
         let mut url_string = None;
         if let Some(true) = url_flag {
-            url_length = Cursor::new(&data[cursor..cursor+1]).read_u8().ok();
-            url_string = String::from_utf8(data[cursor+1..cursor+1+url_length.unwrap() as usize].to_vec()).ok();
+            url_length = Cursor::new(&data[cursor..cursor + 1]).read_u8().ok();
+            url_string = String::from_utf8(
+                data[cursor + 1..cursor + 1 + url_length.unwrap() as usize].to_vec(),
+            ).ok();
             cursor += 1 + url_length.unwrap() as usize;
         }
         let mut ocr_es_id = None;
         if let Some(true) = ocr_stream_flag {
-            ocr_es_id = Cursor::new(&data[cursor..cursor+2]).read_u16::<BigEndian>().ok();
+            ocr_es_id = Cursor::new(&data[cursor..cursor + 2])
+                .read_u16::<BigEndian>()
+                .ok();
             cursor += 2;
         }
         let descriptors = descrfactory(&data[cursor..]);
