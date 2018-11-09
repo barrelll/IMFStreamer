@@ -43,7 +43,7 @@ impl DescrBuilder for DecoderConfigDescriptor {
         let mut cursor: usize = 1;
         let size_of_instance = Some(size_of_instance(data, &mut cursor));
         let objecttypeindication = Cursor::new(&data[cursor..cursor+1]).read_u8().ok();
-        let byte = Cursor::new(&data[cursor..cursor+1]).read_u8().expect("DecoderConfigDescriptor error reading bytes");
+        let byte = Cursor::new(&data[cursor+1..cursor+2]).read_u8().expect("DecoderConfigDescriptor error reading bytes");
         let streamtype = Some({
             let mut arr_idx = 0;
             let mut ret = [false; 6];
@@ -55,7 +55,7 @@ impl DescrBuilder for DecoderConfigDescriptor {
         });
         let upstream = Some(byte & (1 << 1) > 0);
         let reserved = Some(byte & (1 << 0) > 0);
-        let byte = Cursor::new(&data[cursor..cursor+4]).read_u32::<BigEndian>().expect("DecoderConfigDescriptor error reading bytes");
+        let byte = Cursor::new(&data[cursor+2..cursor+6]).read_u32::<BigEndian>().expect("DecoderConfigDescriptor error reading bytes");
         let buffersize_db = Some({
             let mut arr_idx = 0;
             let mut ret = [false; 24];
@@ -65,9 +65,9 @@ impl DescrBuilder for DecoderConfigDescriptor {
             }
             ret
         });
-        let max_bit_rate = Cursor::new(&data[cursor+4..cursor+8]).read_u32::<BigEndian>().ok();
-        let avg_bit_rate = Cursor::new(&data[cursor+8..cursor+12]).read_u32::<BigEndian>().ok();
-        let descriptors = descrfactory(&data[12..]);
+        let max_bit_rate = Cursor::new(&data[cursor+5..cursor+9]).read_u32::<BigEndian>().ok();
+        let avg_bit_rate = Cursor::new(&data[cursor+9..cursor+13]).read_u32::<BigEndian>().ok();
+        let descriptors = descrfactory(&data[cursor+13..]);
         Some(DecoderConfigDescriptor {
             tag,
             size_of_instance,

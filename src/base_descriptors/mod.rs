@@ -170,6 +170,9 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
                 ) as Box<DescrBase>;
                 ret.push(val);
             }
+            0x05 => {
+                println!("DecSpecificInfoTag!");
+            }
             0x0E => {
                 let val = Box::new(
                     ESIDInc::build(&data[cursor_s..cursor_e]).expect("ESIDInc not found?"),
@@ -177,7 +180,7 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
                 ret.push(val);
             }
             val => {
-                println!("{:?}", val);
+                println!("val: {:?} {:b} {:x}", val, val, val);
             }
         }
         cursor_s = cursor_e;
