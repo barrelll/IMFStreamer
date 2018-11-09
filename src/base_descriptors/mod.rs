@@ -3,6 +3,8 @@ mod es_id_inc;
 mod esdescr;
 mod initobjdescr;
 mod objdescr;
+mod decoderspecinfo;
+pub use self::decoderspecinfo::DecoderSpecificInfo;
 pub use self::decoderconfigdescr::DecoderConfigDescriptor;
 pub use self::es_id_inc::ESIDInc;
 pub use self::esdescr::ESDescriptor;
