@@ -79,7 +79,6 @@ impl DescrBuilder for DecoderConfigDescriptor {
             max_bit_rate,
             avg_bit_rate,
             descriptors,
-            ..Default::default()
         })
     }
 }

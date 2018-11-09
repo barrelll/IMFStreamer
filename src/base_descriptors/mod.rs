@@ -176,7 +176,9 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
                 ) as Box<DescrBase>;
                 ret.push(val);
             }
-            val => {}
+            val => {
+                println!("{:?}", val);
+            }
         }
         cursor_s = cursor_e;
         if cursor_e >= len {
