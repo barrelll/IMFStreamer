@@ -150,7 +150,7 @@ impl SampleEntryBase for AudioSampleEntry {
 
 pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
     let len = data.len();
-    let ret = Vec::<Box<SampleEntryBase>>::new();
+    let mut ret = Vec::<Box<SampleEntryBase>>::new();
     loop {
         let size = match Cursor::new(&data[0..4]).read_u32::<BigEndian>() {
             Ok(val) => match val {
@@ -170,8 +170,8 @@ pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
                     let vse = Box::new(
                         MP4VisualSampleEntry::build(data)
                             .expect("samplefactory: mp4v: Error reading sample entry"),
-                    );
-                    println!("{:?}", vse);
+                    ) as Box<SampleEntryBase>;
+                    ret.push(vse);
                 }
                 _ => {}
             },
