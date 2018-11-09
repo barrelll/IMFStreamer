@@ -167,8 +167,9 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
                 let val = Box::new(
                     DecoderConfigDescriptor::build(&data[cursor_s..cursor_e])
                         .expect("DecoderConfigDescriptor not found?"),
-                ) as Box<DescrBase>;
-                ret.push(val);
+                );// as Box<DescrBase>;
+                println!("{:?}", val);
+//                ret.push(val);
             }
             0x0E => {
                 let val = Box::new(
