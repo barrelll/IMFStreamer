@@ -19,7 +19,7 @@ impl DescrBase for DecoderSpecificInfo {
 }
 
 impl DecoderSpecificInfo {
-    pub fn build_specdecinfo(object_identifier: u8, d: &[u8]) -> DecoderSpecificInfo {
+    pub fn build_specdecinfo(_object_identifier: u8, _d: &[u8]) -> DecoderSpecificInfo {
         DecoderSpecificInfo {
             ..Default::default()
         }

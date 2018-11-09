@@ -1,5 +1,6 @@
-use super::{descrfactory, size_of_instance, DescrBase, DescrBaseTags, DescrBuilder, DecoderSpecificInfo};
-use downcast_rs::Downcast;
+use super::{
+    descrfactory, size_of_instance, DecoderSpecificInfo, DescrBase, DescrBaseTags, DescrBuilder,
+};
 use IsSlice;
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -79,7 +80,10 @@ impl DescrBuilder for DecoderConfigDescriptor {
         let mut descriptors = descrfactory(&data[cursor + 13..]);
         descriptors.iter_mut().for_each(|val| match val.tag() {
             Some(DescrBaseTags::DecSpecificInfoTag) => {
-                *val = Box::new(DecoderSpecificInfo::build_specdecinfo(objecttypeindication.unwrap(), &data[cursor+13..])) as Box<DescrBase>;
+                *val = Box::new(DecoderSpecificInfo::build_specdecinfo(
+                    objecttypeindication.unwrap(),
+                    &data[cursor + 13..],
+                )) as Box<DescrBase>;
             }
             Some(_) => {}
             None => {}
