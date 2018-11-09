@@ -1,6 +1,6 @@
 mod mp4_visual_sample_entry;
 
-//use self::mp4_visual_sample_entry::MP4VisualSampleEntry;
+use self::mp4_visual_sample_entry::MP4VisualSampleEntry;
 use byteorder::{BigEndian, ReadBytesExt};
 use downcast_rs::Downcast;
 use std::{
@@ -150,7 +150,7 @@ impl SampleEntryBase for AudioSampleEntry {
 
 pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
     let len = data.len();
-    let mut ret = Vec::<Box<SampleEntryBase>>::new();
+    let ret = Vec::<Box<SampleEntryBase>>::new();
     loop {
         let size = match Cursor::new(&data[0..4]).read_u32::<BigEndian>() {
             Ok(val) => match val {
@@ -168,10 +168,10 @@ pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
             Ok(val) => match val {
                 "mp4v" => {
                     let vse = Box::new(
-                        VisualSampleEntry::build(data)
+                        MP4VisualSampleEntry::build(data)
                             .expect("samplefactory: mp4v: Error reading sample entry"),
-                    ) as Box<SampleEntryBase>;
-                    ret.push(vse);
+                    );
+                    println!("{:?}", vse);
                 }
                 _ => {}
             },
