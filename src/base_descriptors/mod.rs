@@ -1,7 +1,9 @@
+mod decoderconfigdescr;
 mod es_id_inc;
 mod esdescr;
 mod initobjdescr;
 mod objdescr;
+pub use self::decoderconfigdescr::DecoderConfigDescriptor;
 pub use self::es_id_inc::ESIDInc;
 pub use self::esdescr::ESDescriptor;
 pub use self::initobjdescr::InitialObjectDescriptor;
@@ -150,7 +152,7 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
         (end as usize) + cursor
     };
     loop {
-        match Cursor::new(&data[..1])
+        match Cursor::new(&data[cursor_s..cursor_e])
             .read_u8()
             .expect("descrfactory: Error reading tag")
         {
@@ -161,8 +163,14 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
                 ) as Box<DescrBase>;
                 ret.push(val);
             }
+            0x04 => {
+                let val = Box::new(
+                    DecoderConfigDescriptor::build(&data[cursor_s..cursor_e])
+                        .expect("DecoderConfigDescriptor not found?"),
+                ) as Box<DescrBase>;
+                ret.push(val);
+            }
             0x0E => {
-                // DescrBaseTags::ESIDInc
                 let val = Box::new(
                     ESIDInc::build(&data[cursor_s..cursor_e]).expect("ESIDInc not found?"),
                 ) as Box<DescrBase>;
