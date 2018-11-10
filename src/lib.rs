@@ -2,12 +2,12 @@
 #[macro_use]
 extern crate downcast_rs;
 extern crate byteorder;
-pub mod video_objects;
 pub mod base_descriptors;
 pub mod iso_p12;
 pub mod iso_p14;
 pub mod sample_entries;
 mod tests;
+pub mod video_objects;
 
 use byteorder::{BigEndian, ReadBytesExt};
 use std::{
