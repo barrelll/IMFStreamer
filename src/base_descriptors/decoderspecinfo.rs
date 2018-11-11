@@ -42,17 +42,6 @@ impl DescrBuilder for DecoderSpecificInfo {
         });
         let mut cursor = 1;
         let size_of_instance = Some(size_of_instance(data, &mut cursor));
-        for n in &data[..size_of_instance.unwrap() as usize] {
-            let mut s = format!("{:b}", n);
-            for _u in 0..8 - s.len() {
-                s.insert(0, '0');
-            }
-            print!("{} ", s);
-        }
-        let some_value = Cursor::new(&data[cursor..cursor + 4]).read_u32::<BigEndian>();
-        println!("\ns {:?}", some_value);
-        let some_value = Cursor::new(&data[cursor + 4..cursor + 5]).read_u8();
-        println!("s {:?}", some_value);
         let datav = data[cursor..cursor + size_of_instance.unwrap() as usize].to_vec();
         Some(DecoderSpecificInfo {
             tag,

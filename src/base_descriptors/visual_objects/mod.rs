@@ -3,4 +3,7 @@ pub struct BitCursor<'a> {
     data: &'a [u8],
 }
 
-pub struct VisualObject {}
+pub trait VisualObjectReader {
+    type Cursor;
+    // functions yay
+}
