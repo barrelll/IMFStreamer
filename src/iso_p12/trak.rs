@@ -11,7 +11,7 @@ impl<'a> Name<'a> for Trak {
 }
 
 impl BuildNode for Trak {
-    fn build(data: &[u8]) -> Option<Self> {
+    fn build(_data: &[u8]) -> Option<Self> {
         Some(Trak)
     }
 }

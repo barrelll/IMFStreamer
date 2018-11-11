@@ -13,7 +13,7 @@ impl<'a> Name<'a> for Tkhd {
 }
 
 impl BuildNode for Tkhd {
-    fn build(data: &[u8]) -> Option<Self> {
+    fn build(_data: &[u8]) -> Option<Self> {
         Some(Tkhd {
             ..Default::default()
         })

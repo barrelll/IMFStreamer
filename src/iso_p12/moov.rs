@@ -12,7 +12,7 @@ impl<'a> Name<'a> for Moov {
 }
 
 impl BuildNode for Moov {
-    fn build(data: &[u8]) -> Option<Self> {
+    fn build(_data: &[u8]) -> Option<Self> {
         Some(Moov {
             ..Default::default()
         })
