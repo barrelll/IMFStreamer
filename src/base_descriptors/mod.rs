@@ -4,7 +4,6 @@ mod es_id_inc;
 mod esdescr;
 mod initobjdescr;
 mod objdescr;
-mod visual_objects;
 pub use self::decoderconfigdescr::DecoderConfigDescriptor;
 pub use self::decoderspecinfo::DecoderSpecificInfo;
 pub use self::es_id_inc::ESIDInc;

@@ -1,6 +1,7 @@
 use super::{
     descrfactory, size_of_instance, DecoderSpecificInfo, DescrBase, DescrBaseTags, DescrBuilder,
 };
+use downcast_rs::Downcast;
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct DecoderConfigDescriptor {
@@ -78,9 +79,11 @@ impl DescrBuilder for DecoderConfigDescriptor {
         let mut descriptors = descrfactory(&data[cursor + 13..]);
         descriptors.iter_mut().for_each(|val| match val.tag() {
             Some(DescrBaseTags::DecSpecificInfoTag) => {
-                *val = Box::new(DecoderSpecificInfo::build_specdecinfo(
-                    objecttypeindication.unwrap(),
-                )) as Box<DescrBase>;
+                *val = Box::new(
+                    val.downcast_ref::<DecoderSpecificInfo>()
+                        .unwrap()
+                        .build_specdecinfo(objecttypeindication.unwrap()),
+                ) as Box<DescrBase>;
             }
             Some(_) => {}
             None => {}

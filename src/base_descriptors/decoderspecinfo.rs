@@ -19,7 +19,8 @@ impl DescrBase for DecoderSpecificInfo {
 }
 
 impl DecoderSpecificInfo {
-    pub fn build_specdecinfo(_object_identifier: u8) -> DecoderSpecificInfo {
+    pub fn build_specdecinfo(&self, _object_identifier: u8) -> DecoderSpecificInfo {
+        //        let extension =
         DecoderSpecificInfo {
             ..Default::default()
         }
@@ -50,3 +51,16 @@ impl DescrBuilder for DecoderSpecificInfo {
         })
     }
 }
+
+trait DecoderSpecInfoExtension {
+    fn into<T: DecoderSpecInfoExtension>(&self) -> Option<T>;
+}
+
+impl DecoderSpecInfoExtension for Vec<u8> {
+    fn into<T: DecoderSpecInfoExtension>(&self) -> Option<T> {
+        None
+    }
+}
+
+#[derive(Debug, Default, Clone)]
+struct VisualObjectSequence;
