@@ -1,4 +1,4 @@
-use {BuildNode, IsSlice, Name};
+use {BuildNode, Name};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -15,16 +15,15 @@ impl<'a> Name<'a> for Ftyp {
 }
 
 impl BuildNode for Ftyp {
-    fn build<T: IsSlice<Item = u8>>(data: T) -> Option<Self> {
+    fn build(data: &[u8]) -> Option<Self> {
         use byteorder::{BigEndian, ReadBytesExt};
         use std::io::Cursor;
 
-        let d = data.as_slice();
         let err = "Ftyp can't parse minor brands";
-        let major_brand = String::from_utf8(d[8..12].to_vec()).ok();
-        let minor_version = Cursor::new(&d[12..16]).read_u32::<BigEndian>().ok();
+        let major_brand = String::from_utf8(data[8..12].to_vec()).ok();
+        let minor_version = Cursor::new(&data[12..16]).read_u32::<BigEndian>().ok();
         let minor_brands: Option<Vec<String>> = Some(
-            d[16..]
+            data[16..]
                 .to_vec()
                 .chunks(4)
                 .map(|x| String::from_utf8(x.to_vec()).expect(err))

@@ -8,7 +8,6 @@ use std::{
     io::Cursor,
     str::from_utf8,
 };
-use IsSlice;
 
 pub trait SampleEntryBase: Downcast {
     fn seclone(&self) -> Box<SampleEntryBase>;
@@ -29,7 +28,7 @@ impl Debug for SampleEntryBase {
 }
 
 pub trait SampleBuilder {
-    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self>
+    fn build(data: &[u8]) -> Option<Self>
     where
         Self: Sized;
 }
@@ -49,8 +48,7 @@ impl SampleEntryBase for SampleEntry {
 }
 
 impl SampleBuilder for SampleEntry {
-    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
-        let data = d.as_slice();
+    fn build(data: &[u8]) -> Option<Self> {
         let name = String::from_utf8(data[4..8].to_vec()).ok();
         let reserved: Option<[u8; 6]> = Some([0; 6]);
         let data_reference_index = Cursor::new(&data[14..16]).read_u16::<BigEndian>().ok();
@@ -87,8 +85,7 @@ impl SampleEntryBase for VisualSampleEntry {
 }
 
 impl SampleBuilder for VisualSampleEntry {
-    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
-        let data = d.as_slice();
+    fn build(data: &[u8]) -> Option<Self> {
         let sample_entry = SampleEntry::build(data);
         let pre_defined1 = Cursor::new(&data[16..18]).read_u16::<BigEndian>().ok();
         let reserved1 = Cursor::new(&data[18..20]).read_u16::<BigEndian>().ok();

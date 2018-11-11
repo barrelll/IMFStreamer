@@ -1,4 +1,4 @@
-use {BuildNode, IsSlice, Name};
+use {BuildNode, Name};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -13,8 +13,7 @@ impl<'a> Name<'a> for Tkhd {
 }
 
 impl BuildNode for Tkhd {
-    fn build<T: IsSlice<Item = u8>>(data: T) -> Option<Self> {
-        let _d = data.as_slice();
+    fn build(data: &[u8]) -> Option<Self> {
         Some(Tkhd {
             ..Default::default()
         })

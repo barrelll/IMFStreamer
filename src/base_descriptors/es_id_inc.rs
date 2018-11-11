@@ -1,5 +1,4 @@
 use super::{size_of_instance, DescrBase, DescrBaseTags, DescrBuilder};
-use IsSlice;
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -20,8 +19,7 @@ impl DescrBase for ESIDInc {
 }
 
 impl DescrBuilder for ESIDInc {
-    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
-        let data = d.as_slice();
+    fn build(data: &[u8]) -> Option<Self> {
         use byteorder::{BigEndian, ReadBytesExt};
         use std::io::Cursor;
         let tag = Some(match Cursor::new(&data[..1])

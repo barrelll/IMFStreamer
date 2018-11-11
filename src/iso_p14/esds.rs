@@ -1,5 +1,5 @@
 use base_descriptors::{DescrBuilder, ESDescriptor};
-use {BuildNode, IsSlice, Name};
+use {BuildNode, Name};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -14,8 +14,8 @@ impl<'a> Name<'a> for Esds {
 }
 
 impl BuildNode for Esds {
-    fn build<T: IsSlice<Item = u8>>(data: T) -> Option<Self> {
-        let od = ESDescriptor::build(&data.as_slice()[12..]);
+    fn build(data: &[u8]) -> Option<Self> {
+        let od = ESDescriptor::build(&data[12..]);
         Some(Esds { od })
     }
 }

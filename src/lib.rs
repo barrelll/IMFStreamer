@@ -7,7 +7,6 @@ pub mod iso_p12;
 pub mod iso_p14;
 pub mod sample_entries;
 mod tests;
-pub mod video_objects;
 
 use byteorder::{BigEndian, ReadBytesExt};
 use std::{
@@ -24,28 +23,9 @@ pub trait Name<'a> {
 }
 
 pub trait BuildNode {
-    fn build<T: IsSlice<Item = u8>>(data: T) -> Option<Self>
+    fn build(data: &[u8]) -> Option<Self>
     where
         Self: Sized;
-}
-
-pub trait IsSlice {
-    type Item;
-    fn as_slice(&self) -> &[Self::Item];
-}
-
-impl<'a> IsSlice for &'a [u8] {
-    type Item = u8;
-    fn as_slice(&self) -> &[Self::Item] {
-        self
-    }
-}
-
-impl<'a> IsSlice for Vec<u8> {
-    type Item = u8;
-    fn as_slice(&self) -> &[Self::Item] {
-        &self
-    }
 }
 
 pub trait MediaStreamTree {
@@ -87,7 +67,7 @@ fn solid_ntype<T: BuildNode>(fstream: &mut File, n: &Node) -> Result<T> {
     let mut buf = vec![0; buffer_size as usize];
     fstream.seek(SeekFrom::Start(n.slice.0))?;
     fstream.read_exact(&mut buf)?;
-    T::build::<&[u8]>(&buf[..]).ok_or(Error::new(
+    T::build(&buf[..]).ok_or(Error::new(
         ErrorKind::InvalidData,
         format!("Data can't be read properly?"),
     ))

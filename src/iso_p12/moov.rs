@@ -1,4 +1,4 @@
-use {BuildNode, IsSlice, Name};
+use {BuildNode, Name};
 
 #[derive(Debug, Default, Clone)]
 pub struct Moov {
@@ -12,8 +12,7 @@ impl<'a> Name<'a> for Moov {
 }
 
 impl BuildNode for Moov {
-    fn build<T: IsSlice<Item = u8>>(data: T) -> Option<Self> {
-        let _d = data.as_slice();
+    fn build(data: &[u8]) -> Option<Self> {
         Some(Moov {
             ..Default::default()
         })

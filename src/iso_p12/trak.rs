@@ -1,4 +1,4 @@
-use {BuildNode, IsSlice, Name};
+use {BuildNode, Name};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -11,8 +11,7 @@ impl<'a> Name<'a> for Trak {
 }
 
 impl BuildNode for Trak {
-    fn build<T: IsSlice<Item = u8>>(data: T) -> Option<Self> {
-        let _d = data.as_slice();
+    fn build(data: &[u8]) -> Option<Self> {
         Some(Trak)
     }
 }

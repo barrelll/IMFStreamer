@@ -1,7 +1,6 @@
 use super::{
     descrfactory, size_of_instance, DecoderSpecificInfo, DescrBase, DescrBaseTags, DescrBuilder,
 };
-use IsSlice;
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct DecoderConfigDescriptor {
@@ -28,8 +27,7 @@ impl DescrBase for DecoderConfigDescriptor {
 }
 
 impl DescrBuilder for DecoderConfigDescriptor {
-    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
-        let data = d.as_slice();
+    fn build(data: &[u8]) -> Option<Self> {
         use byteorder::{BigEndian, ReadBytesExt};
         use std::io::Cursor;
         let tag = Some(match Cursor::new(&data[..1])

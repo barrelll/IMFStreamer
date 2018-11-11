@@ -1,6 +1,6 @@
 use {
     sample_entries::{samplefactory, SampleEntryBase},
-    BuildNode, FullBox, IsSlice, Name,
+    BuildNode, FullBox, Name,
 };
 
 #[repr(align(8))]
@@ -18,8 +18,7 @@ impl<'a> Name<'a> for Stsd {
 }
 
 impl<'a> BuildNode for Stsd {
-    fn build<T: IsSlice<Item = u8>>(data: T) -> Option<Self> {
-        let data = data.as_slice();
+    fn build(data: &[u8]) -> Option<Self> {
         use byteorder::{BigEndian, ReadBytesExt};
         use std::io::Cursor;
         let fullbox = FullBox::from(&data[8..12]).ok();

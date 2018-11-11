@@ -4,6 +4,7 @@ mod es_id_inc;
 mod esdescr;
 mod initobjdescr;
 mod objdescr;
+mod visual_objects;
 pub use self::decoderconfigdescr::DecoderConfigDescriptor;
 pub use self::decoderspecinfo::DecoderSpecificInfo;
 pub use self::es_id_inc::ESIDInc;
@@ -13,7 +14,6 @@ pub use self::objdescr::ObjectDescriptor;
 
 use downcast_rs::Downcast;
 use std::fmt::{Debug, Display, Formatter, Result};
-use IsSlice;
 
 #[derive(Debug, Clone)]
 pub enum DescrBaseTags {
@@ -116,7 +116,7 @@ impl Debug for DescrBase {
 }
 
 pub trait DescrBuilder {
-    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self>
+    fn build(data: &[u8]) -> Option<Self>
     where
         Self: Sized;
 }

@@ -1,6 +1,6 @@
 use super::{SampleBuilder, SampleEntryBase, VisualSampleEntry};
 use iso_p14::Esds;
-use {BuildNode, IsSlice};
+use BuildNode;
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -16,8 +16,7 @@ impl SampleEntryBase for MP4VisualSampleEntry {
 }
 
 impl SampleBuilder for MP4VisualSampleEntry {
-    fn build<T: IsSlice<Item = u8>>(d: T) -> Option<Self> {
-        let data = d.as_slice();
+    fn build(data: &[u8]) -> Option<Self> {
         let visualsample = VisualSampleEntry::build(data);
         let esds_box = Esds::build(&data[86..]);
         Some(MP4VisualSampleEntry {
