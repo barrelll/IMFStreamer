@@ -29,7 +29,6 @@ impl DecoderSpecificInfo {
 
 impl DescrBuilder for DecoderSpecificInfo {
     fn build(data: &[u8]) -> Option<Self> {
-        use byteorder::BigEndian;
         use byteorder::ReadBytesExt;
         use std::io::Cursor;
         let tag = Some(match Cursor::new(&data[..1])

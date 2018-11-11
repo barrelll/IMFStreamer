@@ -1,7 +1,6 @@
 use super::{
     descrfactory, size_of_instance, DecoderSpecificInfo, DescrBase, DescrBaseTags, DescrBuilder,
 };
-use downcast_rs::Downcast;
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct DecoderConfigDescriptor {
