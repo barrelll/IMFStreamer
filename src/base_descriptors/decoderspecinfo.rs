@@ -87,7 +87,10 @@ impl Clone for Box<DecoderSpecInfoExtension> {
 }
 
 #[derive(Debug, Default, Clone)]
-struct VisualObjectSequence;
+struct VisualObjectSequence {
+    visual_object_sequence_start_code: u32,
+    profile_and_level_indication: u8,
+}
 
 impl DecoderSpecInfoExtension for VisualObjectSequence {
     fn extension_clone(&self) -> Box<DecoderSpecInfoExtension> {

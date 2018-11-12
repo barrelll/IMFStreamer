@@ -76,16 +76,14 @@ impl DescrBuilder for DecoderConfigDescriptor {
             .read_u32::<BigEndian>()
             .ok();
         let mut descriptors = descrfactory(&data[cursor + 13..]);
-        descriptors.iter_mut().for_each(|val| match val.tag() {
-            Some(DescrBaseTags::DecSpecificInfoTag) => {
+        descriptors.iter_mut().for_each(|val| {
+            if let Some(DescrBaseTags::DecSpecificInfoTag) = val.tag() {
                 *val = Box::new(
                     val.downcast_ref::<DecoderSpecificInfo>()
                         .unwrap()
                         .build_specdecinfo(objecttypeindication.unwrap()),
                 ) as Box<DescrBase>;
             }
-            Some(_) => {}
-            None => {}
         });
         Some(DecoderConfigDescriptor {
             tag,
