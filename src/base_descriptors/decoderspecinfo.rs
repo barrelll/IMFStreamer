@@ -1,6 +1,6 @@
 use super::{size_of_instance, DescrBase, DescrBaseTags, DescrBuilder};
-use std::fmt::{Debug, Display, Formatter, Result};
 use downcast_rs::Downcast;
+use std::fmt::{Debug, Display, Formatter, Result};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -45,7 +45,9 @@ impl DescrBuilder for DecoderSpecificInfo {
         });
         let mut cursor = 1;
         let size_of_instance = Some(size_of_instance(data, &mut cursor));
-        let extension = Some(Box::new(data[cursor..cursor + size_of_instance.unwrap() as usize].to_vec()) as Box<DecoderSpecInfoExtension>);
+        let extension = Some(Box::new(
+            data[cursor..cursor + size_of_instance.unwrap() as usize].to_vec(),
+        ) as Box<DecoderSpecInfoExtension>);
         Some(DecoderSpecificInfo {
             tag,
             size_of_instance,
