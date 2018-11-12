@@ -1,11 +1,13 @@
 use super::{size_of_instance, DescrBase, DescrBaseTags, DescrBuilder};
+use std::fmt::{Debug, Display, Formatter, Result};
+use downcast_rs::Downcast;
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct DecoderSpecificInfo {
     tag: Option<DescrBaseTags>,
     size_of_instance: Option<u8>,
-    datav: Vec<u8>,
+    extension: Option<Box<dyn DecoderSpecInfoExtension>>,
 }
 
 impl DescrBase for DecoderSpecificInfo {
@@ -21,6 +23,7 @@ impl DescrBase for DecoderSpecificInfo {
 impl DecoderSpecificInfo {
     pub fn build_specdecinfo(&self, _object_identifier: u8) -> DecoderSpecificInfo {
         //        let extension =
+        println!("ddsadasdas");
         DecoderSpecificInfo {
             ..Default::default()
         }
@@ -42,24 +45,50 @@ impl DescrBuilder for DecoderSpecificInfo {
         });
         let mut cursor = 1;
         let size_of_instance = Some(size_of_instance(data, &mut cursor));
-        let datav = data[cursor..cursor + size_of_instance.unwrap() as usize].to_vec();
+        let extension = Some(Box::new(data[cursor..cursor + size_of_instance.unwrap() as usize].to_vec()) as Box<DecoderSpecInfoExtension>);
         Some(DecoderSpecificInfo {
             tag,
             size_of_instance,
-            datav,
+            extension,
         })
     }
 }
 
-trait DecoderSpecInfoExtension {
-    fn into<T: DecoderSpecInfoExtension>(&self) -> Option<T>;
+trait DecoderSpecInfoExtension: Downcast {
+    fn extension_clone(&self) -> Box<DecoderSpecInfoExtension>;
 }
 
+impl_downcast!(DecoderSpecInfoExtension);
+
 impl DecoderSpecInfoExtension for Vec<u8> {
-    fn into<T: DecoderSpecInfoExtension>(&self) -> Option<T> {
-        None
+    fn extension_clone(&self) -> Box<DecoderSpecInfoExtension> {
+        Box::new(self.to_vec())
+    }
+}
+
+impl Display for DecoderSpecInfoExtension {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "DecoderSpecInfoExtension")
+    }
+}
+
+impl Debug for DecoderSpecInfoExtension {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "DecoderSpecInfoExtension")
+    }
+}
+
+impl Clone for Box<DecoderSpecInfoExtension> {
+    fn clone(&self) -> Box<dyn DecoderSpecInfoExtension> {
+        self.extension_clone()
     }
 }
 
 #[derive(Debug, Default, Clone)]
 struct VisualObjectSequence;
+
+impl DecoderSpecInfoExtension for VisualObjectSequence {
+    fn extension_clone(&self) -> Box<DecoderSpecInfoExtension> {
+        Box::new(self.clone())
+    }
+}
