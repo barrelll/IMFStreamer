@@ -22,8 +22,9 @@ impl DescrBase for DecoderSpecificInfo {
 
 impl DecoderSpecificInfo {
     pub fn build_specdecinfo(&self, _object_identifier: u8) -> DecoderSpecificInfo {
-        //        let extension =
-        println!("ddsadasdas");
+        let extension_data = self.extension.as_ref().unwrap().downcast_ref::<Vec<u8>>();
+        let extension = DSIEBuilder::into::<VisualObjectSequence>(extension_data.unwrap());
+        println!("{:?}", extension);
         DecoderSpecificInfo {
             ..Default::default()
         }
@@ -83,6 +84,16 @@ impl Debug for DecoderSpecInfoExtension {
 impl Clone for Box<DecoderSpecInfoExtension> {
     fn clone(&self) -> Box<dyn DecoderSpecInfoExtension> {
         self.extension_clone()
+    }
+}
+
+trait DSIEBuilder {
+    fn into<T: DecoderSpecInfoExtension>(&self) -> Option<Box<T>>;
+}
+
+impl DSIEBuilder for Vec<u8> {
+    fn into<T: DecoderSpecInfoExtension>(&self) -> Option<Box<T>> {
+        None
     }
 }
 
