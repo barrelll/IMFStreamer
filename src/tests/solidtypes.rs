@@ -34,8 +34,12 @@ fn read_visual_objects() {
             let esdescr = &esds_box.od;
             let esdescr_descriptors = &esdescr.as_ref().unwrap().descriptors;
             for descr in esdescr_descriptors {
-                if let Some(::base_descriptors::DescrBaseTags::DecoderConfigDescrTag) = descr.tag() {
-                    println!("{:?}", descr.downcast_ref::<::base_descriptors::DecoderConfigDescriptor>());
+                if let Some(::base_descriptors::DescrBaseTags::DecoderConfigDescrTag) = descr.tag()
+                {
+                    println!(
+                        "{:?}",
+                        descr.downcast_ref::<::base_descriptors::DecoderConfigDescriptor>()
+                    );
                 }
             }
         }

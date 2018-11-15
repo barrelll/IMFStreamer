@@ -1,6 +1,4 @@
-use super::{
-    descrfactory, size_of_instance, DescrBase, DescrBaseTags, DescrBuilder,
-};
+use super::{descrfactory, size_of_instance, DescrBase, DescrBaseTags, DescrBuilder};
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct DecoderConfigDescriptor {
