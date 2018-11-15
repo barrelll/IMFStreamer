@@ -5,8 +5,8 @@ use BuildNode;
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct MP4VisualSampleEntry {
-    visualsample: Option<VisualSampleEntry>,
-    esds_box: Option<Esds>,
+    pub visualsample: Option<VisualSampleEntry>,
+    pub esds_box: Option<Esds>,
 }
 
 impl SampleEntryBase for MP4VisualSampleEntry {

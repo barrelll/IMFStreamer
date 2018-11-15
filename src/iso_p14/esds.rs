@@ -4,7 +4,7 @@ use {BuildNode, Name};
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct Esds {
-    od: Option<ESDescriptor>,
+    pub od: Option<ESDescriptor>,
 }
 
 impl<'a> Name<'a> for Esds {

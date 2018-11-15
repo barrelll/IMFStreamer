@@ -24,10 +24,22 @@ fn esds() {
 }
 
 #[test]
-fn esds2() {
+fn read_visual_objects() {
     let mut handle = handle("a1-foreman-QCIF.mp4");
     let node = handle.searchtree_stype::<::iso_p12::Stsd>("moov.trak1.mdia.minf.stbl.stsd");
-    assert!(node.is_ok())
+    let sample_entries = node.unwrap().sample_entries;
+    for sample_entry in sample_entries {
+        if let Some(mp4v) = sample_entry.downcast_ref::<::sample_entries::MP4VisualSampleEntry>() {
+            let esds_box = &mp4v.esds_box.as_ref().unwrap();
+            let esdescr = &esds_box.od;
+            let esdescr_descriptors = &esdescr.as_ref().unwrap().descriptors;
+            for descr in esdescr_descriptors {
+                if let Some(::base_descriptors::DescrBaseTags::DecoderConfigDescrTag) = descr.tag() {
+                    println!("{:?}", descr.downcast_ref::<::base_descriptors::DecoderConfigDescriptor>());
+                }
+            }
+        }
+    }
 }
 
 fn path(filename: &str) -> PathBuf {

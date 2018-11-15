@@ -1,6 +1,6 @@
 mod mp4_visual_sample_entry;
 
-use self::mp4_visual_sample_entry::MP4VisualSampleEntry;
+pub use self::mp4_visual_sample_entry::MP4VisualSampleEntry;
 use byteorder::{BigEndian, ReadBytesExt};
 use downcast_rs::Downcast;
 use std::{

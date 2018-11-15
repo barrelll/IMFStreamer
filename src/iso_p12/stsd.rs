@@ -6,9 +6,9 @@ use {
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct Stsd {
-    fullbox: Option<FullBox>,
-    entry_count: Option<u32>,
-    sample_entries: Vec<Box<dyn SampleEntryBase>>,
+    pub fullbox: Option<FullBox>,
+    pub entry_count: Option<u32>,
+    pub sample_entries: Vec<Box<dyn SampleEntryBase>>,
 }
 
 impl<'a> Name<'a> for Stsd {

@@ -3,18 +3,18 @@ use super::{descrfactory, size_of_instance, DescrBase, DescrBaseTags, DescrBuild
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct ESDescriptor {
-    tag: Option<DescrBaseTags>,
-    size_of_instance: Option<u8>,
-    es_id: Option<u16>,
-    stream_dependence_flag: Option<bool>,
-    url_flag: Option<bool>,
-    ocr_stream_flag: Option<bool>,
-    strean_priority: Option<[bool; 5]>,
-    depends_on_es_id: Option<u16>,
-    url_length: Option<u8>,
-    url_string: Option<String>,
-    ocr_es_id: Option<u16>,
-    descriptors: Vec<Box<dyn DescrBase>>,
+    pub tag: Option<DescrBaseTags>,
+    pub size_of_instance: Option<u8>,
+    pub es_id: Option<u16>,
+    pub stream_dependence_flag: Option<bool>,
+    pub url_flag: Option<bool>,
+    pub ocr_stream_flag: Option<bool>,
+    pub strean_priority: Option<[bool; 5]>,
+    pub depends_on_es_id: Option<u16>,
+    pub url_length: Option<u8>,
+    pub url_string: Option<String>,
+    pub ocr_es_id: Option<u16>,
+    pub descriptors: Vec<Box<dyn DescrBase>>,
 }
 
 impl DescrBase for ESDescriptor {
