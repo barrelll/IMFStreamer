@@ -1,2 +1,2 @@
-mod video_object_sequence;
-pub use self::video_object_sequence::VideoObjectSequence;
+mod visual_object_sequence;
+pub use self::visual_object_sequence::VisualObjectSequence;
