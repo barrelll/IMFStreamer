@@ -49,7 +49,7 @@ fn read_visual_objects() {
                                 Some(val) => {
                                     match val {
                                         32 => {
-                                            // Create an instance of VisualObjectSequence here through the dec_spec extension vec data
+                                            // Create an instance of VideoObjectSequence here through the dec_spec extension vec data
                                         }
                                         _ => {}
                                     }
