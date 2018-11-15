@@ -1,5 +1,5 @@
 use super::{
-    descrfactory, size_of_instance, DecoderSpecificInfo, DescrBase, DescrBaseTags, DescrBuilder,
+    descrfactory, size_of_instance, DescrBase, DescrBaseTags, DescrBuilder,
 };
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -75,7 +75,7 @@ impl DescrBuilder for DecoderConfigDescriptor {
         let avg_bit_rate = Cursor::new(&data[cursor + 9..cursor + 13])
             .read_u32::<BigEndian>()
             .ok();
-        let mut descriptors = descrfactory(&data[cursor + 13..]);
+        let descriptors = descrfactory(&data[cursor + 13..]);
         Some(DecoderConfigDescriptor {
             tag,
             size_of_instance,
