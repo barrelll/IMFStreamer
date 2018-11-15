@@ -5,6 +5,7 @@ extern crate byteorder;
 pub mod base_descriptors;
 pub mod iso_p12;
 pub mod iso_p14;
+pub mod objects;
 pub mod sample_entries;
 mod tests;
 
