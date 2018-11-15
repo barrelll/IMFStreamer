@@ -2,16 +2,16 @@ use super::{descrfactory, size_of_instance, DescrBase, DescrBaseTags, DescrBuild
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct DecoderConfigDescriptor {
-    tag: Option<DescrBaseTags>,
-    size_of_instance: Option<u8>,
-    objecttypeindication: Option<u8>,
-    streamtype: Option<[bool; 6]>,
-    upstream: Option<bool>,
-    reserved: Option<bool>,
-    buffersize_db: Option<[bool; 24]>,
-    max_bit_rate: Option<u32>,
-    avg_bit_rate: Option<u32>,
-    descriptors: Vec<Box<dyn DescrBase>>,
+    pub tag: Option<DescrBaseTags>,
+    pub size_of_instance: Option<u8>,
+    pub objecttypeindication: Option<u8>,
+    pub streamtype: Option<[bool; 6]>,
+    pub upstream: Option<bool>,
+    pub reserved: Option<bool>,
+    pub buffersize_db: Option<[bool; 24]>,
+    pub max_bit_rate: Option<u32>,
+    pub avg_bit_rate: Option<u32>,
+    pub descriptors: Vec<Box<dyn DescrBase>>,
 }
 
 impl DescrBase for DecoderConfigDescriptor {

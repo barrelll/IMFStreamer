@@ -36,10 +36,28 @@ fn read_visual_objects() {
             for descr in esdescr_descriptors {
                 if let Some(::base_descriptors::DescrBaseTags::DecoderConfigDescrTag) = descr.tag()
                 {
-                    println!(
-                        "{:?}",
-                        descr.downcast_ref::<::base_descriptors::DecoderConfigDescriptor>()
-                    );
+                    let dec_conf =
+                        descr.downcast_ref::<::base_descriptors::DecoderConfigDescriptor>();
+                    let extension_type = &dec_conf.unwrap().objecttypeindication;
+                    for descr in &dec_conf.unwrap().descriptors {
+                        if let Some(::base_descriptors::DescrBaseTags::DecSpecificInfoTag) =
+                            descr.tag()
+                        {
+                            let dec_spec =
+                                descr.downcast_ref::<::base_descriptors::DecoderSpecificInfo>();
+                            let extension = match extension_type {
+                                Some(val) => {
+                                    match val {
+                                        32 => {
+                                            // Create an instance of VisualObjectSequence here through the dec_spec extension vec data
+                                        }
+                                        _ => {}
+                                    }
+                                }
+                                None => {}
+                            };
+                        }
+                    }
                 }
             }
         }

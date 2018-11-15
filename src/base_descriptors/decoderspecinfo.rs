@@ -3,9 +3,9 @@ use super::{size_of_instance, DescrBase, DescrBaseTags, DescrBuilder};
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct DecoderSpecificInfo {
-    tag: Option<DescrBaseTags>,
-    size_of_instance: Option<u8>,
-    extension: Vec<u8>,
+    pub tag: Option<DescrBaseTags>,
+    pub size_of_instance: Option<u8>,
+    pub extension: Vec<u8>,
 }
 
 impl DescrBase for DecoderSpecificInfo {
