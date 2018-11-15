@@ -46,16 +46,13 @@ fn read_visual_objects() {
                             let dec_spec: &::base_descriptors::DecoderSpecificInfo =
                                 descr.downcast_ref::<::base_descriptors::DecoderSpecificInfo>().unwrap();
                             match extension_type {
-                                Some(val) => {
-                                    match val {
-                                        32 => {
-                                            let data: &[u8] = &dec_spec.extension;
-                                            println!("{:?}", data);
-                                            // Create an instance of VideoObjectSequence here through the dec_spec extension vec data
-                                        }
-                                        _ => {}
+                                Some(val) => match val {
+                                    32 => {
+                                        let data: &[u8] = &dec_spec.extension;
+                                        println!("{:?}", data);
                                     }
-                                }
+                                    _ => {}
+                                },
                                 None => {}
                             };
                         }
