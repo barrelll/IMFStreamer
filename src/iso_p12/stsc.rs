@@ -1,4 +1,4 @@
-use {BuildNode, Name, FullBox};
+use {BuildNode, FullBox, Name};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -21,12 +21,15 @@ impl BuildNode for Stsc {
 
         let fullbox = FullBox::from(&data[8..12]).ok();
         let entry_count = Cursor::new(&data[12..16]).read_u32::<BigEndian>().ok();
-        let sample_numbers: Vec<(u32, u32, u32)> = data[16..].chunks(12).map(|val| {
-            let first_chunk = Cursor::new(&val[..4]).read_u32::<BigEndian>().unwrap();
-            let samples_per_chunk = Cursor::new(&val[4..8]).read_u32::<BigEndian>().unwrap();
-            let sample_description_index = Cursor::new(&val[8..]).read_u32::<BigEndian>().unwrap();
-            (first_chunk, samples_per_chunk, sample_description_index)
-        }).collect();
+        let sample_numbers: Vec<(u32, u32, u32)> = data[16..]
+            .chunks(12)
+            .map(|val| {
+                let first_chunk = Cursor::new(&val[..4]).read_u32::<BigEndian>().unwrap();
+                let samples_per_chunk = Cursor::new(&val[4..8]).read_u32::<BigEndian>().unwrap();
+                let sample_description_index =
+                    Cursor::new(&val[8..]).read_u32::<BigEndian>().unwrap();
+                (first_chunk, samples_per_chunk, sample_description_index)
+            }).collect();
 
         Some(Stsc {
             fullbox,

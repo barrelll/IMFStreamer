@@ -1,4 +1,4 @@
-use {BuildNode, Name, FullBox};
+use {BuildNode, FullBox, Name};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -21,9 +21,10 @@ impl BuildNode for Co64 {
 
         let fullbox = FullBox::from(&data[8..12]).ok();
         let entry_count = Cursor::new(&data[12..16]).read_u32::<BigEndian>().ok();
-        let chunk_offsets: Vec<u64> = data[16..].chunks(8).map(|val| {
-            Cursor::new(val).read_u64::<BigEndian>().unwrap()
-        }).collect();
+        let chunk_offsets: Vec<u64> = data[16..]
+            .chunks(8)
+            .map(|val| Cursor::new(val).read_u64::<BigEndian>().unwrap())
+            .collect();
 
         Some(Co64 {
             fullbox,

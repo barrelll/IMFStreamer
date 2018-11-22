@@ -1,4 +1,4 @@
-use {BuildNode, Name, FullBox};
+use {BuildNode, FullBox, Name};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -21,9 +21,10 @@ impl BuildNode for Stco {
 
         let fullbox = FullBox::from(&data[8..12]).ok();
         let entry_count = Cursor::new(&data[12..16]).read_u32::<BigEndian>().ok();
-        let chunk_offsets: Vec<u32> = data[16..].chunks(4).map(|val| {
-            Cursor::new(val).read_u32::<BigEndian>().unwrap()
-        }).collect();
+        let chunk_offsets: Vec<u32> = data[16..]
+            .chunks(4)
+            .map(|val| Cursor::new(val).read_u32::<BigEndian>().unwrap())
+            .collect();
 
         Some(Stco {
             fullbox,
