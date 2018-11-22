@@ -31,43 +31,10 @@ fn stss() {
 }
 
 #[test]
-fn read_visual_objects() {
-    let mut handle = handle("a1-foreman-QCIF.mp4");
-    let node = handle.searchtree_stype::<::iso_p12::Stsd>("moov.trak1.mdia.minf.stbl.stsd");
-    let sample_entries = node.unwrap().sample_entries;
-    for sample_entry in sample_entries {
-        if let Some(mp4v) = sample_entry.downcast_ref::<::sample_entries::MP4VisualSampleEntry>() {
-            let esds_box = &mp4v.esds_box.as_ref().unwrap();
-            let esdescr = &esds_box.od;
-            let esdescr_descriptors = &esdescr.as_ref().unwrap().descriptors;
-            for descr in esdescr_descriptors {
-                if let Some(::base_descriptors::DescrBaseTags::DecoderConfigDescrTag) = descr.tag()
-                {
-                    let dec_conf =
-                        descr.downcast_ref::<::base_descriptors::DecoderConfigDescriptor>();
-                    let extension_type = &dec_conf.unwrap().objecttypeindication;
-                    for descr in &dec_conf.unwrap().descriptors {
-                        if let Some(::base_descriptors::DescrBaseTags::DecSpecificInfoTag) =
-                            descr.tag()
-                        {
-                            let dec_spec: &::base_descriptors::DecoderSpecificInfo =
-                                descr.downcast_ref::<::base_descriptors::DecoderSpecificInfo>().unwrap();
-                            match extension_type {
-                                Some(val) => match val {
-                                    32 => {
-                                        let data: &[u8] = &dec_spec.extension;
-                                        println!("{:?}", data);
-                                    }
-                                    _ => {}
-                                },
-                                None => {}
-                            };
-                        }
-                    }
-                }
-            }
-        }
-    }
+fn stsc() {
+    let mut handle = handle("fragment-random-access-1+AF8-rev1.mp4");
+    let node = handle.searchtree_stype::<::iso_p12::Stsc>("moov.trak.mdia.minf.stbl.stsc");
+    assert!(node.is_ok());
 }
 
 fn path(filename: &str) -> PathBuf {
