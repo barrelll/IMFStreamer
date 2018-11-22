@@ -24,6 +24,13 @@ fn esds() {
 }
 
 #[test]
+fn stss() {
+    let mut handle = handle("fragment-random-access-1+AF8-rev1.mp4");
+    let node = handle.searchtree_stype::<::iso_p12::Stss>("moov.trak.mdia.minf.stbl.stss");
+    assert!(node.is_ok());
+}
+
+#[test]
 fn read_visual_objects() {
     let mut handle = handle("a1-foreman-QCIF.mp4");
     let node = handle.searchtree_stype::<::iso_p12::Stsd>("moov.trak1.mdia.minf.stbl.stsd");
