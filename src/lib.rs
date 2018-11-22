@@ -77,7 +77,7 @@ fn solid_ntype<T: BuildNode>(fstream: &mut File, n: &Node) -> Result<T> {
 fn search_slice(s: Slice, handle: &mut File, atomname: &str, idx: usize) -> Result<Node> {
     let len = handle.metadata()?.len();
     let mut buf: [u8; 8] = [0; 8];
-    let mut offset = 8;
+    let mut offset: u64;
     let mut cur_pos = handle.seek(SeekFrom::Start(s.0 + s.2))?;
     let mut enclosed_idx = 0;
 
@@ -87,7 +87,7 @@ fn search_slice(s: Slice, handle: &mut File, atomname: &str, idx: usize) -> Resu
             Err(e) => {
                 return Err(Error::new(
                     ErrorKind::InvalidData,
-                    format!("Unable to read name, {}", e),
+                    format!("Unable to read name, searching for name = {}, current positon = {}, {}", atomname, cur_pos, e),
                 ))
             }
         };
@@ -96,14 +96,20 @@ fn search_slice(s: Slice, handle: &mut File, atomname: &str, idx: usize) -> Resu
 
         let size = match Cursor::new(&buf[..4]).read_u32::<BigEndian>() {
             Ok(val) => match val {
-                0 => len,
+                0 => {
+                    offset = 8;
+                    len
+                },
                 1 => {
                     offset = 16;
                     let mut buf: [u8; 8] = [0; 8];
                     let _ = handle.read_exact(&mut buf)?;
                     Cursor::new(&buf[..]).read_u64::<BigEndian>()?
                 }
-                _ => val as u64,
+                _ => {
+                    offset = 8;
+                    val as u64
+                },
             },
             Err(e) => {
                 return Err(Error::new(
