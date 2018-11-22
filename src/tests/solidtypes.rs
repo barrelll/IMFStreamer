@@ -37,6 +37,13 @@ fn stsc() {
     assert!(node.is_ok());
 }
 
+#[test]
+fn stco() {
+    let mut handle = handle("fragment-random-access-1+AF8-rev1.mp4");
+    let node = handle.searchtree_stype::<::iso_p12::Stco>("moov.trak.mdia.minf.stbl.stco");
+    assert!(node.is_ok());
+}
+
 fn path(filename: &str) -> PathBuf {
     /*D:\download.tsi.telecom-paristech.fr\gpac\MPEG\ISOBMFF-Conformance\isobmff*/
     let path = Path::new("d:\\")
