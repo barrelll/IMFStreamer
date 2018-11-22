@@ -44,6 +44,13 @@ fn stco() {
     assert!(node.is_ok());
 }
 
+#[test]
+fn co64() {
+    let mut handle = handle("14_large.mp4");
+    let node = handle.searchtree_stype::<::iso_p12::Co64>("moov.trak.mdia.minf.stbl.co64");
+    assert!(node.is_ok());
+}
+
 fn path(filename: &str) -> PathBuf {
     /*D:\download.tsi.telecom-paristech.fr\gpac\MPEG\ISOBMFF-Conformance\isobmff*/
     let path = Path::new("d:\\")
