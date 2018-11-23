@@ -82,17 +82,18 @@ fn search_slice(s: Slice, handle: &mut File, atomname: &str, idx: usize) -> Resu
     let mut enclosed_idx = 0;
 
     while handle.read_exact(&mut buf).is_ok() {
-        let name =
-            match str::from_utf8(&buf[4..8]) {
-                Ok(val) => val,
-                Err(e) => return Err(Error::new(
+        let name = match str::from_utf8(&buf[4..8]) {
+            Ok(val) => val,
+            Err(e) => {
+                return Err(Error::new(
                     ErrorKind::InvalidData,
                     format!(
                         "Unable to read name, searching for name = {}, current positon = {}, {}",
                         atomname, cur_pos, e
                     ),
-                )),
-            };
+                ))
+            }
+        };
 
         let prevnodeendat = cur_pos;
 
