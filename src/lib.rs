@@ -191,10 +191,7 @@ pub struct Node {
 
 impl Node {
     fn new(slice: Slice, name: Option<String>) -> Node {
-        Node {
-            slice,
-            name,
-        }
+        Node { slice, name }
     }
 
     fn default() -> Node {
