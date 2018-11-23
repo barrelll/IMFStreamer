@@ -55,7 +55,13 @@ fn co64() {
 fn tkhd() {
     let mut handle = handle("14_large.mp4");
     let node = handle.searchtree_stype::<::iso_p12::Tkhd>("moov.trak.tkhd");
-    println!("{:?}", node);
+    assert!(node.is_ok());
+}
+
+#[test]
+fn hdlr() {
+    let mut handle = handle("14_large.mp4");
+    let node = handle.searchtree_stype::<::iso_p12::Hdlr>("moov.trak.mdia.hdlr");
     assert!(node.is_ok());
 }
 
