@@ -29,8 +29,8 @@ pub trait BuildNode {
 pub trait MediaStreamTree {
     fn searchtree_stype<T: BuildNode>(&mut self, search: &str) -> Result<T>;
     fn searchtree(&mut self, search: &str) -> Result<Node>;
-    fn searchtree_fromnode_stype<T: BuildNode>(&mut self, search: &str, node: Node) -> Result<T>;
-    fn searchtree_fromnode(&mut self, search: &str, node: Node) -> Result<Node>;
+    fn searchtree_fromnode_stype<T: BuildNode>(&mut self, node: Node, search: &str) -> Result<T>;
+    fn searchtree_fromnode(&mut self, node: Node, search: &str) -> Result<Node>;
 }
 
 impl MediaStreamTree for File {
