@@ -1,6 +1,4 @@
-use {
-    BuildNode, FullBox, Name,
-};
+use {BuildNode, FullBox, Name};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]

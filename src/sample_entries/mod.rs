@@ -46,7 +46,9 @@ impl SampleEntryBase for SampleEntry {
     fn seclone(&self) -> Box<SampleEntryBase> {
         Box::new(self.clone())
     }
-    fn name(&self) -> String { String::from("SampleEntry") }
+    fn name(&self) -> String {
+        String::from("SampleEntry")
+    }
 }
 
 impl SampleBuilder for SampleEntry {
@@ -84,7 +86,9 @@ impl SampleEntryBase for VisualSampleEntry {
     fn seclone(&self) -> Box<SampleEntryBase> {
         Box::new(self.clone())
     }
-    fn name(&self) -> String { String::from("VisualSampleEntry") }
+    fn name(&self) -> String {
+        String::from("VisualSampleEntry")
+    }
 }
 
 impl SampleBuilder for VisualSampleEntry {
@@ -176,7 +180,13 @@ pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
                     ) as Box<SampleEntryBase>;
                     ret.push(vse);
                 }
-                _ => {}
+                any => {
+                    let se = Box::new(
+                        SampleEntry::build(data)
+                            .expect(format!("samplefactory: {} : Error reading sample entry", any).as_ref()),
+                    ) as Box<SampleEntryBase>;
+                    ret.push(se);
+                }
             },
             Err(e) => {
                 panic!("samplefactory, Error reading sample name {:?}", e);
