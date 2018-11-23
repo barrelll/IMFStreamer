@@ -11,6 +11,7 @@ use std::{
 
 pub trait SampleEntryBase: Downcast {
     fn seclone(&self) -> Box<SampleEntryBase>;
+    fn name(&self) -> String;
 }
 
 impl_downcast!(SampleEntryBase);
@@ -23,7 +24,7 @@ impl Clone for Box<SampleEntryBase> {
 
 impl Debug for SampleEntryBase {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "SampleEntryBase")
+        write!(f, "SampleEntryBase: Type {}", self.name())
     }
 }
 
@@ -45,6 +46,7 @@ impl SampleEntryBase for SampleEntry {
     fn seclone(&self) -> Box<SampleEntryBase> {
         Box::new(self.clone())
     }
+    fn name(&self) -> String { String::from("SampleEntry") }
 }
 
 impl SampleBuilder for SampleEntry {
@@ -82,6 +84,7 @@ impl SampleEntryBase for VisualSampleEntry {
     fn seclone(&self) -> Box<SampleEntryBase> {
         Box::new(self.clone())
     }
+    fn name(&self) -> String { String::from("VisualSampleEntry") }
 }
 
 impl SampleBuilder for VisualSampleEntry {
@@ -142,6 +145,9 @@ pub struct AudioSampleEntry {
 impl SampleEntryBase for AudioSampleEntry {
     fn seclone(&self) -> Box<SampleEntryBase> {
         Box::new(self.clone())
+    }
+    fn name(&self) -> String {
+        String::from("AudioSampleEntry")
     }
 }
 

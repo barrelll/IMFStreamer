@@ -13,6 +13,9 @@ impl SampleEntryBase for MP4VisualSampleEntry {
     fn seclone(&self) -> Box<SampleEntryBase> {
         Box::new(self.clone())
     }
+    fn name(&self) -> String {
+        String::from("MP4VisualSampleEntry")
+    }
 }
 
 impl SampleBuilder for MP4VisualSampleEntry {
