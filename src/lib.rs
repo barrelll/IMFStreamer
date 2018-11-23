@@ -68,10 +68,9 @@ impl MediaStreamTree for File {
 
     fn searchtree_fromnode(&mut self, search: &str, node: Node) -> Result<Node> {
         let paths: Vec<&str> = search.split('.').collect();
-        let mut slice = Slice(0, self.metadata()?.len(), 0);
+        let mut slice = node.slice;
         let mut node = Node {
-            name: node.name,
-            slice: node.slice,
+            ..Default::default()
         };
         for path in paths {
             let idx: String = path.rmatches(char::is_numeric).collect();
