@@ -11,11 +11,8 @@ mod tests;
 
 use byteorder::{BigEndian, ReadBytesExt};
 use std::{
-    cell::RefCell,
     fs::File,
     io::{Cursor, Error, ErrorKind, Read, Result, Seek, SeekFrom},
-    rc::Rc,
-    rc::Weak,
     str,
 };
 
