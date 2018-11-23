@@ -5,7 +5,7 @@ use {BuildNode, FullBox, Name};
 pub struct Stsc {
     pub fullbox: Option<FullBox>,
     pub entry_count: Option<u32>,
-    pub sample_numbers: Vec<(u32, u32, u32)>,
+    pub chunk_description: Vec<(u32, u32, u32)>,
 }
 
 impl<'a> Name<'a> for Stsc {
