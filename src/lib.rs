@@ -146,7 +146,6 @@ fn search_slice(s: Slice, handle: &mut File, atomname: &str, idx: usize) -> Resu
                 return Ok(Node::new(
                     Slice(prevnodeendat, cur_pos, offset),
                     Some(name.to_string()),
-                    RefCell::new(Weak::new()),
                 ));
             }
             enclosed_idx += 1;
@@ -191,17 +190,13 @@ impl FullBox {
 pub struct Node {
     slice: Slice,
     name: Option<String>,
-    parent: RefCell<Weak<Node>>,
-    children: Vec<Rc<Node>>,
 }
 
 impl Node {
-    fn new(slice: Slice, name: Option<String>, parent: RefCell<Weak<Node>>) -> Node {
+    fn new(slice: Slice, name: Option<String>) -> Node {
         Node {
             slice,
             name,
-            parent,
-            ..Default::default()
         }
     }
 
@@ -209,9 +204,5 @@ impl Node {
         Node {
             ..Default::default()
         }
-    }
-
-    pub fn num_children(&self) -> usize {
-        self.children.len()
     }
 }
