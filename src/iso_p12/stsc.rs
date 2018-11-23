@@ -21,7 +21,7 @@ impl BuildNode for Stsc {
 
         let fullbox = FullBox::from(&data[8..12]).ok();
         let entry_count = Cursor::new(&data[12..16]).read_u32::<BigEndian>().ok();
-        let sample_numbers: Vec<(u32, u32, u32)> = data[16..]
+        let chunk_description: Vec<(u32, u32, u32)> = data[16..]
             .chunks(12)
             .map(|val| {
                 let first_chunk = Cursor::new(&val[..4]).read_u32::<BigEndian>().unwrap();
@@ -34,7 +34,7 @@ impl BuildNode for Stsc {
         Some(Stsc {
             fullbox,
             entry_count,
-            sample_numbers,
+            chunk_description,
         })
     }
 }
