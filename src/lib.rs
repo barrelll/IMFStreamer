@@ -29,6 +29,8 @@ pub trait BuildNode {
 pub trait MediaStreamTree {
     fn searchtree_stype<T: BuildNode>(&mut self, search: &str) -> Result<T>;
     fn searchtree(&mut self, search: &str) -> Result<Node>;
+    fn searchtree_fromnode_stype<T: BuildNode>(&mut self, search: &str, node: Node) -> Result<T>;
+    fn searchtree_fromnode(&mut self, search: &str, node: Node) -> Result<Node>;
 }
 
 impl MediaStreamTree for File {
@@ -42,6 +44,34 @@ impl MediaStreamTree for File {
         let mut slice = Slice(0, self.metadata()?.len(), 0);
         let mut node = Node {
             ..Default::default()
+        };
+        for path in paths {
+            let idx: String = path.rmatches(char::is_numeric).collect();
+            let idx = if path.len() > 4 {
+                match idx.parse::<usize>() {
+                    Ok(val) => val,
+                    _ => 0,
+                }
+            } else {
+                0
+            };
+            node = search_slice(slice, self, &path[..4].to_ascii_lowercase(), idx)?;
+            slice = node.slice;
+        }
+        Ok(node)
+    }
+
+    fn searchtree_fromnode_stype<T: BuildNode>(&mut self, search: &str, node: Node) -> Result<T> {
+        let node = self.searchtree_fromnode(search, node)?;
+        solid_ntype::<T>(self, &node)
+    }
+
+    fn searchtree_fromnode(&mut self, search: &str, node: Node) -> Result<Node> {
+        let paths: Vec<&str> = search.split('.').collect();
+        let mut slice = Slice(0, self.metadata()?.len(), 0);
+        let mut node = Node {
+            name: node.name,
+            slice: node.slice,
         };
         for path in paths {
             let idx: String = path.rmatches(char::is_numeric).collect();
