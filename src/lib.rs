@@ -61,12 +61,12 @@ impl MediaStreamTree for File {
         Ok(node)
     }
 
-    fn searchtree_fromnode_stype<T: BuildNode>(&mut self, search: &str, node: Node) -> Result<T> {
-        let node = self.searchtree_fromnode(search, node)?;
+    fn searchtree_fromnode_stype<T: BuildNode>(&mut self, node: Node, search: &str) -> Result<T> {
+        let node = self.searchtree_fromnode(node, search)?;
         solid_ntype::<T>(self, &node)
     }
 
-    fn searchtree_fromnode(&mut self, search: &str, node: Node) -> Result<Node> {
+    fn searchtree_fromnode(&mut self, node: Node, search: &str) -> Result<Node> {
         let paths: Vec<&str> = search.split('.').collect();
         let mut slice = node.slice;
         let mut node = Node {
