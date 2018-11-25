@@ -164,7 +164,6 @@ impl SampleEntryBase for AudioSampleEntry {
 
 impl SampleBuilder for AudioSampleEntry {
     fn build(data: &[u8]) -> Option<Self> {
-        println!("{:?}", data.len());
         let sample_entry = SampleEntry::build(data);
         let reserved1 = Some({
             [
@@ -223,7 +222,6 @@ pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
                         MP4AudioSampleEntry::build(data)
                             .expect("samplefactory: mp4v: Error reading sample entry"),
                     ) as Box<SampleEntryBase>;
-                    println!("{:?}", ase.downcast_ref::<MP4AudioSampleEntry>());
                     ret.push(ase);
                 }
                 any => {
