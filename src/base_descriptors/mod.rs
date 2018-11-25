@@ -178,6 +178,20 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
                 ) as Box<DescrBase>;
                 ret.push(val);
             }
+            0x10 | 0x02 => {
+                let val = Box::new(
+                    InitialObjectDescriptor::build(&data[cursor_s..cursor_e])
+                        .expect("DecoderConfigDescriptor not found?"),
+                ) as Box<DescrBase>;
+                ret.push(val);
+            }
+            0x11 | 0x01 => {
+                let val = Box::new(
+                    ObjectDescriptor::build(&data[cursor_s..cursor_e])
+                        .expect("DecoderConfigDescriptor not found?"),
+                ) as Box<DescrBase>;
+                ret.push(val);
+            }
             0x0E => {
                 let val = Box::new(
                     ESIDInc::build(&data[cursor_s..cursor_e]).expect("ESIDInc not found?"),
