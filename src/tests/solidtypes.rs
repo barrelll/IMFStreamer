@@ -65,6 +65,13 @@ fn hdlr() {
     assert!(node.is_ok());
 }
 
+#[test]
+fn stsz() {
+    let mut handle = handle("14_large.mp4");
+    let node = handle.searchtree_stype::<::iso_p12::Stsz>("moov.trak.mdia.minf.stbl.stsz");
+    assert!(node.is_ok());
+}
+
 fn path(filename: &str) -> PathBuf {
     /*D:\download.tsi.telecom-paristech.fr\gpac\MPEG\ISOBMFF-Conformance\isobmff*/
     let path = Path::new("d:\\")
