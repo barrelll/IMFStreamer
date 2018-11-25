@@ -1,6 +1,7 @@
 mod mp4_visual_sample_entry;
+mod mp4_audio_sample_entry;
 
-pub use self::mp4_visual_sample_entry::MP4VisualSampleEntry;
+pub use self::{mp4_visual_sample_entry::MP4VisualSampleEntry, mp4_audio_sample_entry::MP4AudioSampleEntry};
 use byteorder::{BigEndian, ReadBytesExt};
 use downcast_rs::Downcast;
 use std::{
@@ -144,6 +145,12 @@ impl SampleBuilder for VisualSampleEntry {
 #[derive(Debug, Default, Clone)]
 pub struct AudioSampleEntry {
     sample_entry: Option<SampleEntry>,
+    reserved1: Option<[u32; 2]>,
+    channelcount: Option<u16>,
+    samplesize: Option<u16>,
+    pre_defined: Option<u16>,
+    reserved2: Option<u16>,
+    samplerate: Option<u32>,
 }
 
 impl SampleEntryBase for AudioSampleEntry {
@@ -152,6 +159,37 @@ impl SampleEntryBase for AudioSampleEntry {
     }
     fn name(&self) -> String {
         String::from("AudioSampleEntry")
+    }
+}
+
+impl SampleBuilder for AudioSampleEntry {
+    fn build(data: &[u8]) -> Option<Self> {
+        println!("{:?}", data.len());
+        let sample_entry = SampleEntry::build(data);
+        let reserved1 = Some({
+            [
+                Cursor::new(&data[16..20])
+                    .read_u32::<BigEndian>()
+                    .expect("SampleBuilder, Error reading VisualSampleEntry"),
+                Cursor::new(&data[20..24])
+                    .read_u32::<BigEndian>()
+                    .expect("SampleBuilder, Error reading VisualSampleEntry"),
+            ]
+        });
+        let channelcount = Cursor::new(&data[24..26]).read_u16::<BigEndian>().ok();
+        let samplesize = Cursor::new(&data[26..28]).read_u16::<BigEndian>().ok();
+        let pre_defined = Cursor::new(&data[28..30]).read_u16::<BigEndian>().ok();
+        let reserved2 = Cursor::new(&data[30..32]).read_u16::<BigEndian>().ok();
+        let samplerate = Cursor::new(&data[32..36]).read_u32::<BigEndian>().ok();
+        Some(AudioSampleEntry {
+            sample_entry,
+            reserved1,
+            channelcount,
+            samplesize,
+            pre_defined,
+            reserved2,
+            samplerate,
+        })
     }
 }
 
@@ -179,6 +217,14 @@ pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
                             .expect("samplefactory: mp4v: Error reading sample entry"),
                     ) as Box<SampleEntryBase>;
                     ret.push(vse);
+                }
+                "mp4a" => {
+                    let ase = Box::new(
+                        MP4AudioSampleEntry::build(data)
+                            .expect("samplefactory: mp4v: Error reading sample entry"),
+                    ) as Box<SampleEntryBase>;
+                    println!("{:?}", ase.downcast_ref::<MP4AudioSampleEntry>());
+                    ret.push(ase);
                 }
                 any => {
                     let se = Box::new(SampleEntry::build(data).expect(
