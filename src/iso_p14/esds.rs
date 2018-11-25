@@ -1,5 +1,5 @@
 use base_descriptors::{DescrBuilder, ESDescriptor};
-use {BuildNode, Name, FullBox};
+use {BuildNode, FullBox, Name};
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
@@ -18,9 +18,6 @@ impl BuildNode for Esds {
     fn build(data: &[u8]) -> Option<Self> {
         let fullbox = FullBox::from(&data[8..12]).ok();
         let od = ESDescriptor::build(&data[12..]);
-        Some(Esds {
-            fullbox,
-            od,
-        })
+        Some(Esds { fullbox, od })
     }
 }

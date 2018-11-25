@@ -1,4 +1,4 @@
-use super::{SampleBuilder, SampleEntryBase, AudioSampleEntry};
+use super::{AudioSampleEntry, SampleBuilder, SampleEntryBase};
 use iso_p14::Esds;
 use BuildNode;
 
