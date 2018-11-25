@@ -24,9 +24,8 @@ impl<'a> BuildNode for Stsz {
         let sample_count = Cursor::new(&data[16..20]).read_u32::<BigEndian>().ok();
         let entry_sizes: Vec<u32> = data[20..]
             .chunks(4)
-            .map(|val| {
-                Cursor::new(val).read_u32::<BigEndian>().unwrap()
-            }).collect();
+            .map(|val| Cursor::new(val).read_u32::<BigEndian>().unwrap())
+            .collect();
         Some(Stsz {
             fullbox,
             sample_size,

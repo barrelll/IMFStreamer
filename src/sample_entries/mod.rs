@@ -181,10 +181,9 @@ pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
                     ret.push(vse);
                 }
                 any => {
-                    let se = Box::new(
-                        SampleEntry::build(data)
-                            .expect(format!("samplefactory: {} : Error reading sample entry", any).as_ref()),
-                    ) as Box<SampleEntryBase>;
+                    let se = Box::new(SampleEntry::build(data).expect(
+                        format!("samplefactory: {} : Error reading sample entry", any).as_ref(),
+                    )) as Box<SampleEntryBase>;
                     ret.push(se);
                 }
             },
