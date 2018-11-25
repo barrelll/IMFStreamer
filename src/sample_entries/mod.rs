@@ -1,8 +1,9 @@
 mod mp4_audio_sample_entry;
 mod mp4_visual_sample_entry;
+mod mp4_sample_entry;
 
 pub use self::{
-    mp4_audio_sample_entry::MP4AudioSampleEntry, mp4_visual_sample_entry::MP4VisualSampleEntry,
+    mp4_audio_sample_entry::MP4AudioSampleEntry, mp4_visual_sample_entry::MP4VisualSampleEntry, mp4_sample_entry::MP4SampleEntry,
 };
 use byteorder::{BigEndian, ReadBytesExt};
 use downcast_rs::Downcast;
@@ -240,7 +241,13 @@ pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
                     ) as Box<SampleEntryBase>;
                     ret.push(ase);
                 }
-                "mp4s" => {}
+                "mp4s" => {
+                    let se = Box::new(
+                        MP4SampleEntry::build(data)
+                            .expect("samplefactory: mp4v: Error reading sample entry"),
+                    ) as Box<SampleEntryBase>;
+                    ret.push(se);
+                }
                 any => {
                     let se = Box::new(SampleEntry::build(data).expect(
                         format!("samplefactory: {} : Error reading sample entry", any).as_ref(),

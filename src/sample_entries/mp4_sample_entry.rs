@@ -1,29 +1,29 @@
-use super::{AudioSampleEntry, SampleBuilder, SampleEntryBase};
+use super::{SampleEntry, SampleBuilder, SampleEntryBase};
 use iso_p14::Esds;
 use BuildNode;
 
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
-pub struct MP4AudioSampleEntry {
-    pub visualsample: Option<AudioSampleEntry>,
+pub struct MP4SampleEntry {
+    pub sample_entry: Option<SampleEntry>,
     pub esds_box: Option<Esds>,
 }
 
-impl SampleEntryBase for MP4AudioSampleEntry {
+impl SampleEntryBase for MP4SampleEntry {
     fn seclone(&self) -> Box<SampleEntryBase> {
         Box::new(self.clone())
     }
     fn name(&self) -> String {
-        String::from("MP4AudioSampleEntry")
+        String::from("MP4SampleEntry")
     }
 }
 
-impl SampleBuilder for MP4AudioSampleEntry {
+impl SampleBuilder for MP4SampleEntry {
     fn build(data: &[u8]) -> Option<Self> {
-        let visualsample = AudioSampleEntry::build(data);
-        let esds_box: Option<Esds> = Esds::build(&data[36..]);
-        Some(MP4AudioSampleEntry {
-            visualsample,
+        let sample_entry = SampleEntry::build(data);
+        let esds_box = Esds::build(&data[16..]);
+        Some(MP4SampleEntry {
+            sample_entry,
             esds_box,
         })
     }

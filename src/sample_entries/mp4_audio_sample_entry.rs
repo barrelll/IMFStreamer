@@ -21,7 +21,7 @@ impl SampleEntryBase for MP4AudioSampleEntry {
 impl SampleBuilder for MP4AudioSampleEntry {
     fn build(data: &[u8]) -> Option<Self> {
         let audiosample = AudioSampleEntry::build(data);
-        let esds_box: Option<Esds> = Esds::build(&data[36..]);
+        let esds_box = Esds::build(&data[36..]);
         Some(MP4AudioSampleEntry {
             audiosample,
             esds_box,
