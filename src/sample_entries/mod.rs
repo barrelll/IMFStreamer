@@ -212,9 +212,23 @@ pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
         };
         match from_utf8(&data[4..8]) {
             Ok(val) => match val {
+                "vide" => {
+                    let vse = Box::new(
+                        VisualSampleEntry::build(data)
+                            .expect("samplefactory: mp4v: Error reading sample entry"),
+                    ) as Box<SampleEntryBase>;
+                    ret.push(vse);
+                }
                 "mp4v" => {
                     let vse = Box::new(
                         MP4VisualSampleEntry::build(data)
+                            .expect("samplefactory: mp4v: Error reading sample entry"),
+                    ) as Box<SampleEntryBase>;
+                    ret.push(vse);
+                }
+                "soun" => {
+                    let vse = Box::new(
+                        AudioSampleEntry::build(data)
                             .expect("samplefactory: mp4v: Error reading sample entry"),
                     ) as Box<SampleEntryBase>;
                     ret.push(vse);
@@ -226,6 +240,7 @@ pub fn samplefactory(data: &[u8]) -> Vec<Box<SampleEntryBase>> {
                     ) as Box<SampleEntryBase>;
                     ret.push(ase);
                 }
+                "mp4s" => {}
                 any => {
                     let se = Box::new(SampleEntry::build(data).expect(
                         format!("samplefactory: {} : Error reading sample entry", any).as_ref(),
