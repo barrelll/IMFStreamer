@@ -5,7 +5,7 @@ use {BuildNode, FullBox, Name};
 #[derive(Debug, Default, Clone)]
 pub struct Esds {
     pub fullbox: Option<FullBox>,
-    pub od: Option<ESDescriptor>,
+    pub es: Option<ESDescriptor>,
 }
 
 impl<'a> Name<'a> for Esds {
@@ -17,7 +17,7 @@ impl<'a> Name<'a> for Esds {
 impl BuildNode for Esds {
     fn build(data: &[u8]) -> Option<Self> {
         let fullbox = FullBox::from(&data[8..12]).ok();
-        let od = ESDescriptor::build(&data[12..]);
-        Some(Esds { fullbox, od })
+        let es = ESDescriptor::build(&data[12..]);
+        Some(Esds { fullbox, es })
     }
 }
