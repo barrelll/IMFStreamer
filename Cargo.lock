@@ -1,4 +1,9 @@
 [[package]]
+name = "bitvec"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
 name = "byteorder"
 version = "1.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -12,10 +17,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "imf-streamer"
 version = "0.1.0"
 dependencies = [
+ "bitvec 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "byteorder 1.2.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "downcast-rs 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [metadata]
+"checksum bitvec 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e37e2176261200377c7cde4c6de020394174df556c356f965e4bc239f5ce1c5a"
 "checksum byteorder 1.2.7 (registry+https://github.com/rust-lang/crates.io-index)" = "94f88df23a25417badc922ab0f5716cc1330e87f71ddd9203b3a3ccd9cedf75d"
 "checksum downcast-rs 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)" = "18df8ce4470c189d18aa926022da57544f31e154631eb4cfe796aea97051fe6c"

@@ -6,3 +6,4 @@ authors = ["barrelll <jharrell_@outlook.com>"]
 [dependencies]
 downcast-rs = "1.0.3"
 byteorder = "1.2.7"
+bitvec = "0.8.0"
