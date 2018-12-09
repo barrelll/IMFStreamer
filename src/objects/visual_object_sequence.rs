@@ -19,10 +19,6 @@ impl ObjectBuilder for VisualObjectSequence {
         }
         // left to right, Big endian
         let mut bit_position = 0;
-        let mut cursor = Cursor::new(data);
-//        while cursor.read {
-//
-//        }
         None
     }
 }

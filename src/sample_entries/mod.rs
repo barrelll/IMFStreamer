@@ -42,6 +42,7 @@ pub trait SampleBuilder {
 #[repr(align(8))]
 #[derive(Debug, Default, Clone)]
 pub struct SampleEntry {
+    size: Option<u32>,
     name: Option<String>,
     reserved: Option<[u8; 6]>,
     data_reference_index: Option<u16>,
@@ -58,10 +59,12 @@ impl SampleEntryBase for SampleEntry {
 
 impl SampleBuilder for SampleEntry {
     fn build(data: &[u8]) -> Option<Self> {
+        let size = Cursor::new(&data[..4]).read_u32::<BigEndian>().ok();
         let name = String::from_utf8(data[4..8].to_vec()).ok();
         let reserved: Option<[u8; 6]> = Some([0; 6]);
         let data_reference_index = Cursor::new(&data[14..16]).read_u16::<BigEndian>().ok();
         Some(SampleEntry {
+            size,
             name,
             reserved,
             data_reference_index,
