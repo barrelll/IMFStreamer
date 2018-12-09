@@ -39,7 +39,7 @@ fn read_stsd_bin() {
     f.read_to_end(&mut vu8);
     let s = String::from_utf8_lossy(&vu8[..]);
     let stsd = ::iso_p12::Stsd::build(&vu8[..196]).unwrap();
-    let sample: &::sample_entries::MP4VisualSampleEntry  = stsd.sample_entries.first().unwrap().downcast_ref::<::sample_entries::MP4VisualSampleEntry>().unwrap();
+    let sample: &::sample_entries::MP4VisualSampleEntry = stsd.sample_entries.first().unwrap().downcast_ref::<::sample_entries::MP4VisualSampleEntry>().unwrap();
     println!("{:?}:\n\t {}\n\t {:?}", stsd, s, sample);
 }
 
