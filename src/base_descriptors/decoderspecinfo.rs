@@ -32,7 +32,7 @@ impl DescrBuilder for DecoderSpecificInfo {
         use std::io::Cursor;
         let tag = Some(match Cursor::new(&data[..1])
             .read_u8()
-            .expect("ESDescriptor error reading tag")
+            .expect("DecoderSpecificInfo error reading tag")
         {
             0x05 => DescrBaseTags::DecSpecificInfoTag,
             _ => {
