@@ -4,6 +4,8 @@ mod es_id_inc;
 mod esdescr;
 mod initobjdescr;
 mod objdescr;
+mod slconfigdescr;
+pub use self::slconfigdescr::SlConfigDescr;
 pub use self::decoderconfigdescr::DecoderConfigDescriptor;
 pub use self::decoderspecinfo::DecoderSpecificInfo;
 pub use self::es_id_inc::ESIDInc;
@@ -174,6 +176,13 @@ fn descrfactory(data: &[u8]) -> Vec<Box<DescrBase>> {
             0x05 => {
                 let val = Box::new(
                     DecoderSpecificInfo::build(&data[cursor_s..cursor_e])
+                        .expect("DecoderConfigDescriptor not found?"),
+                ) as Box<DescrBase>;
+                ret.push(val);
+            }
+            0x06 => {
+                let val = Box::new(
+                    SlConfigDescr::build(&data[cursor_s..cursor_e])
                         .expect("DecoderConfigDescriptor not found?"),
                 ) as Box<DescrBase>;
                 ret.push(val);

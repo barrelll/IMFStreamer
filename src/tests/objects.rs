@@ -36,7 +36,7 @@ fn read_stsd_bin() {
         .join("stsd.bin");
     let mut f = File::open(path).expect("Error opening file");
     let mut vu8 = Vec::new();
-    f.read_to_end(&mut vu8);
+    let _ = f.read_to_end(&mut vu8);
     let s = String::from_utf8_lossy(&vu8[..]);
     let stsd = ::iso_p12::Stsd::build(&vu8[..196]).unwrap();
     let sample: &::sample_entries::MP4VisualSampleEntry = stsd.sample_entries.first().unwrap().downcast_ref::<::sample_entries::MP4VisualSampleEntry>().unwrap();
