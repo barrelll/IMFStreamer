@@ -32,7 +32,7 @@ impl DescrBuilder for SlConfigDescr {
             .read_u8()
             .expect("SlConfigDescr error reading tag")
         {
-            0x05 => DescrBaseTags::DecSpecificInfoTag,
+            0x06 => DescrBaseTags::DecSpecificInfoTag,
             _ => {
                 panic!("SlConfigDescr descriptor tag doesn't match the object descriptor base tags");
             }
