@@ -28,7 +28,8 @@ impl DescrBuilder for SlConfigDescr {
     fn build(data: &[u8]) -> Option<Self> {
         use byteorder::ReadBytesExt;
         use std::io::Cursor;
-        let tag = Some(match Cursor::new(&data[..1])
+        let mut cursor = Cursor::new(data);
+        let tag = Some(match cursor
             .read_u8()
             .expect("SlConfigDescr error reading tag")
         {
@@ -37,6 +38,14 @@ impl DescrBuilder for SlConfigDescr {
                 panic!("SlConfigDescr descriptor tag doesn't match the object descriptor base tags");
             }
         });
+
+        let predefined = cursor.read_u8().ok();
+        match predefined {
+            Some(val) => {
+                if val == 0 {} else {}
+            }
+            None => return None
+        }
         Some(SlConfigDescr {
             tag
         })
