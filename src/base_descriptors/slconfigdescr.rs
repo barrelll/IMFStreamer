@@ -16,14 +16,6 @@ impl DescrBase for SlConfigDescr {
     }
 }
 
-impl SlConfigDescr {
-    pub fn build_specdecinfo(&self, _object_identifier: u8) -> SlConfigDescr {
-        SlConfigDescr {
-            ..Default::default()
-        }
-    }
-}
-
 impl DescrBuilder for SlConfigDescr {
     fn build(data: &[u8]) -> Option<Self> {
         use byteorder::ReadBytesExt;
@@ -42,6 +34,7 @@ impl DescrBuilder for SlConfigDescr {
         let predefined = cursor.read_u8().ok();
         match predefined {
             Some(val) => {
+                let byte = cursor.read_u8();
                 if val == 0 {} else {}
             }
             None => return None
